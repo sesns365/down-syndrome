@@ -270,7 +270,7 @@ function frame(film,T){
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${svg}</svg>`;
 }
 /* 容易念錯的字：配音用同音字代念，字幕仍顯示原字 */
-const PRON=[["人和他們","人漢他們"],["復健和學習","復健漢學習"],["他們和我們","他們漢我們"],["起鬨","起哄"],["長得","掌得"],["差很多","岔很多"],["為自己","位自己"],["當成","蕩成"],["……","，"],["：","，"]];
+const PRON=[["做錯了事","做錯勒事"],["人和他們","人漢他們"],["復健和學習","復健漢學習"],["他們和我們","他們漢我們"],["起鬨","起哄"],["長得","掌得"],["差很多","岔很多"],["為自己","位自己"],["當成","蕩成"],["……","，"],["：","，"]];
 function say(s){let o=s;for(const [a,b] of PRON)o=o.split(a).join(b);return o}
 const api={FILMS,build,frame,W,H,PRON,say};
 if(typeof module!=="undefined")module.exports=api;else window.FILMKIT=api;

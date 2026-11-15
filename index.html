@@ -44,6 +44,8 @@ h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance}
 .btn:focus-visible,a:focus-visible,button:focus-visible{outline:3px solid var(--mark);outline-offset:3px}
 .scale{width:100%;max-width:470px;justify-self:center}
 .cloud{position:absolute;background:#fff;border-radius:999px;opacity:.9}
+.se365-logo{position:absolute;top:16px;right:max(16px,env(safe-area-inset-right,0px));width:64px;height:64px;opacity:.85;z-index:2}
+@media (max-width:600px){.se365-logo{width:46px;height:46px;top:10px}}
 
 /* nav */
 .jump{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
@@ -118,6 +120,7 @@ dialog .x{background:#fff;color:var(--ink);border:0;border-radius:10px;font:inhe
 <body>
 
 <header class="hero">
+ <img class="se365-logo" src="img/se365.png" alt="特工365">
  <div class="cloud" style="left:5%;top:28px;width:150px;height:44px"></div>
  <div class="cloud" style="right:7%;top:46px;width:200px;height:54px"></div>
  <div class="wrap">
