@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>一個詞的重量｜特教宣導教材包</title>
+<meta name="description" content="讓學生不再用「很唐」「唐寶」開玩笑的特教宣導教材包：互動網頁、動畫、學習單、教學指引。">
+<meta property="og:title" content="一個詞的重量｜特教宣導教材包">
+<meta property="og:description" content="「很唐」「唐寶」不是玩笑。說出口的話，要自己負責。">
+<meta property="og:image" content="img/kit.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Iansui&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+/* 版面：天空草地主視覺＋字卡式資源區，一個主色（鈷藍）、螢光筆黃標重點，與教材包一致 */
+:root{
+  --sky:#e6f2ff; --sky2:#f4f9ff; --grass:#e3f1dc; --paper:#ffffff; --bg:#f6f5f1;
+  --ink:#1b2540; --muted:#4c5670; --line:#dedbd2; --acc:#2a55e0; --acc-soft:#e7edff; --mark:#ffe066;
+  --display:"Iansui","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --r:18px; --shadow:0 1px 2px rgba(27,37,64,.06),0 6px 18px rgba(27,37,64,.07);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.7}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance}
+.mk{background:linear-gradient(transparent 60%,var(--mark) 60%,var(--mark) 92%,transparent 92%);padding:0 .08em}
+
+/* hero */
+.hero{background:linear-gradient(var(--sky) 0%,var(--sky2) 72%,var(--grass) 72%);position:relative;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:center;padding-block:56px 64px}
+.kicker{font-weight:700;letter-spacing:.16em;color:var(--muted);font-size:.95rem}
+.hero h1{font-size:clamp(3rem,8vw,6.2rem);line-height:1.05;letter-spacing:.04em;margin:10px 0 18px}
+.lead{font-family:var(--display);font-size:clamp(1.25rem,2.4vw,1.75rem);line-height:1.5;margin:0 0 26px}
+.cta{display:flex;flex-wrap:wrap;gap:14px}
+.btn{display:inline-flex;align-items:center;gap:10px;font:inherit;font-weight:700;text-decoration:none;border-radius:14px;padding:14px 22px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--ink)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.pri:hover{box-shadow:0 6px 0 #17318f}
+.btn small{font-weight:500;opacity:.85}
+.btn:focus-visible,a:focus-visible,button:focus-visible{outline:3px solid var(--mark);outline-offset:3px}
+.scale{width:100%;max-width:470px;justify-self:center}
+.cloud{position:absolute;background:#fff;border-radius:999px;opacity:.9}
+
+/* nav */
+.jump{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.jump .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:8px}
+.jump a{white-space:nowrap;text-decoration:none;font-weight:700;color:var(--muted);padding:6px 14px;border-radius:10px}
+.jump a:hover{background:var(--bg);color:var(--ink)}
+
+section.blk{padding-block:56px 8px}
+.sh{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.sh h2{font-size:clamp(1.8rem,3.6vw,2.4rem)}
+.sh p{margin:0;color:var(--muted)}
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card .pic{display:block;aspect-ratio:16/9;background:var(--sky);overflow:hidden;position:relative;border:0;padding:0;width:100%;cursor:pointer}
+.card .pic img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.card .pic:hover img{transform:scale(1.03)}
+.card .bd{padding:18px 20px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.card h3{font-size:1.5rem}
+.card p{margin:0;color:var(--muted);font-size:.98rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:.82rem;font-weight:700;padding:2px 10px;border-radius:999px;background:var(--acc-soft);color:var(--acc)}
+.tag.y{background:#fff4cc;color:#7a5a00}
+.acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:6px}
+.act{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:.95rem;border:1.5px solid var(--line);border-radius:12px;padding:8px 14px;background:var(--paper);color:var(--ink);cursor:pointer;font-family:inherit}
+.act:hover{border-color:var(--ink)}
+.act.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.act svg{width:18px;height:18px;flex:none}
+.play{position:absolute;inset:auto 16px 16px auto;width:64px;height:64px;border-radius:50%;background:var(--ink);display:grid;place-items:center;box-shadow:0 8px 18px rgba(27,37,64,.3)}
+.play::after{content:"";border-left:22px solid #fff;border-top:13px solid transparent;border-bottom:13px solid transparent;margin-left:6px}
+.dur{position:absolute;left:14px;bottom:14px;background:rgba(27,37,64,.85);color:#fff;font-weight:700;font-size:.85rem;padding:2px 10px;border-radius:8px;font-variant-numeric:tabular-nums}
+
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;counter-reset:s}
+.st{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.st b{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--ink);color:#fff;font-size:1rem}
+.st span{font-family:var(--display);font-size:1.15rem;line-height:1.35}
+.st i{font-style:normal;color:var(--muted);font-size:.88rem;font-variant-numeric:tabular-nums}
+.note{margin-top:14px;color:var(--muted);font-size:.95rem}
+
+.doc{display:grid;grid-template-columns:200px 1fr;gap:0}
+.doc .thumb{background:var(--bg);display:grid;place-items:center;padding:16px;border-right:1px solid var(--line)}
+.doc .thumb img{width:100%;max-width:170px;box-shadow:0 4px 12px rgba(27,37,64,.15);border-radius:4px;background:#fff}
+
+.all{margin-top:28px;background:var(--ink);color:#fff;border-radius:var(--r);padding:26px 28px;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.all h3{font-size:1.6rem}
+.all p{margin:4px 0 0;opacity:.85}
+.all .btn{border-color:#fff}
+
+footer{padding-block:48px 40px;color:var(--muted);font-size:.9rem;text-align:center}
+
+/* video modal */
+dialog{border:0;padding:0;background:#000;border-radius:16px;width:min(1100px,94vw);max-height:92vh;overflow:hidden}
+dialog::backdrop{background:rgba(10,14,25,.78)}
+dialog video{display:block;width:100%;max-height:82vh;background:#000}
+dialog .bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:#111827;color:#fff}
+dialog .bar b{font-family:var(--display);font-weight:400;font-size:1.2rem}
+dialog .x{background:#fff;color:var(--ink);border:0;border-radius:10px;font:inherit;font-weight:700;padding:6px 14px;cursor:pointer}
+
+@media (max-width:980px){.flow{grid-template-columns:repeat(4,minmax(0,1fr))}.g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){
+ .hero .wrap{grid-template-columns:1fr;padding-block:36px 40px}
+ .scale{max-width:300px}
+ .g2,.g3{grid-template-columns:1fr}
+ .flow{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .doc{grid-template-columns:1fr}.doc .thumb{border-right:0;border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+ <div class="cloud" style="left:5%;top:28px;width:150px;height:44px"></div>
+ <div class="cloud" style="right:7%;top:46px;width:200px;height:54px"></div>
+ <div class="wrap">
+  <div>
+   <div class="kicker">特教宣導教材包</div>
+   <h1><span class="mk">一個詞的重量</span></h1>
+   <p class="lead">「很唐」「唐寶」不是玩笑。<br>說出口的話，要自己負責。</p>
+   <div class="cta">
+    <a class="btn pri" href="es/" target="_blank" rel="noopener">開始上課：國小中高年級版 <small>40 分鐘</small></a>
+    <a class="btn" href="jh/" target="_blank" rel="noopener">國中版 <small>45 分鐘</small></a>
+   </div>
+  </div>
+  <svg class="scale" viewBox="0 0 760 560" role="img" aria-label="天秤：「很唐」那一邊比「好好說」重">
+   <ellipse cx="380" cy="532" rx="170" ry="18" fill="#1b2540" opacity=".08"/>
+   <path d="M370 150 L390 150 L410 520 L350 520 Z" fill="#1b2540"/>
+   <rect x="290" y="510" width="180" height="22" rx="10" fill="#1b2540"/>
+   <circle cx="380" cy="150" r="22" fill="#ffe066" stroke="#1b2540" stroke-width="6"/>
+   <g transform="rotate(12 380 150)">
+    <rect x="70" y="140" width="620" height="18" rx="9" fill="#1b2540"/>
+    <g transform="translate(110 158) rotate(-12)">
+     <path d="M0 0 L-70 170 M0 0 L70 170" stroke="#1b2540" stroke-width="4"/>
+     <path d="M-110 170 H110 Q100 215 0 215 Q-100 215 -110 170Z" fill="#cfe3ff" stroke="#1b2540" stroke-width="5"/>
+     <g transform="translate(0 132)"><rect x="-74" y="-46" width="148" height="78" rx="14" fill="#fff" stroke="#1b2540" stroke-width="5"/><text y="12" text-anchor="middle" font-size="44" fill="#1b2540" font-family="Iansui,sans-serif">好好說</text></g>
+    </g>
+    <g transform="translate(650 158) rotate(-12)">
+     <path d="M0 0 L-70 170 M0 0 L70 170" stroke="#1b2540" stroke-width="4"/>
+     <path d="M-110 170 H110 Q100 215 0 215 Q-100 215 -110 170Z" fill="#ffd9d2" stroke="#1b2540" stroke-width="5"/>
+     <g transform="translate(0 120) rotate(-6)"><rect x="-82" y="-64" width="164" height="106" rx="14" fill="#1b2540"/><text y="12" text-anchor="middle" font-size="64" fill="#fff" font-family="Iansui,sans-serif">很唐</text></g>
+    </g>
+   </g>
+  </svg>
+ </div>
+</header>
+
+<nav class="jump" aria-label="頁內導覽"><div class="wrap">
+ <a href="#web">互動網頁</a><a href="#video">動畫影片</a><a href="#flow">上課流程</a><a href="#guide">教學指引</a><a href="#paper">學習單與證書</a><a href="#more">其他資源</a>
+</div></nav>
+
+<main>
+<section class="blk wrap" id="web">
+ <div class="sh"><h2>互動網頁</h2><p>投影上課用，一步一頁、老師按鍵控制，不用打字。</p></div>
+ <div class="grid g2">
+  <article class="card">
+   <a class="pic" href="es/" target="_blank" rel="noopener"><img src="img/shot-es.jpg" alt="國小中高年級版：紅綠燈活動畫面" loading="lazy"></a>
+   <div class="bd">
+    <h3>國小中高年級版</h3>
+    <div class="tags"><span class="tag">入班一節課 40 分鐘</span><span class="tag">7 個步驟</span><span class="tag y">含三支動畫</span></div>
+    <p>情境短劇、認識唐氏症、紅綠燈投票、真實案例，最後全班念出「語言小守護者宣言」。</p>
+    <div class="acts"><a class="act pri" href="es/" target="_blank" rel="noopener">開啟互動網頁</a></div>
+   </div>
+  </article>
+  <article class="card">
+   <a class="pic" href="jh/" target="_blank" rel="noopener"><img src="img/shot-jh.jpg" alt="國中版：群組對話情境畫面" loading="lazy"></a>
+   <div class="bd">
+    <h3>國中版</h3>
+    <div class="tags"><span class="tag">一節課 45 分鐘</span><span class="tag">8 個步驟</span><span class="tag y">群組對話情境</span></div>
+    <p>從班級群組的一句話出發，談旁觀者的力量、稱呼由誰決定，最後訂下班級語言宣言。</p>
+    <div class="acts"><a class="act pri" href="jh/" target="_blank" rel="noopener">開啟互動網頁</a></div>
+   </div>
+  </article>
+ </div>
+</section>
+
+<section class="blk wrap" id="video">
+ <div class="sh"><h2>動畫影片</h2><p>台灣語音旁白、中文字幕，1080p 高畫質，可線上播放或下載。</p></div>
+ <div class="grid g3" id="vids"></div>
+</section>
+
+<section class="blk wrap" id="flow">
+ <div class="sh"><h2>上課流程</h2><p>國小中高年級版，一節課 40 分鐘。</p></div>
+ <div class="flow">
+  <div class="st"><b>1</b><span>開場提問</span><i>3 分・上課前投票</i></div>
+  <div class="st"><b>2</b><span>情境短劇</span><i>7 分・動畫 1</i></div>
+  <div class="st"><b>3</b><span>認識唐氏症</span><i>7 分・動畫 2</i></div>
+  <div class="st"><b>4</b><span>唐寶寶這個詞</span><i>3 分</i></div>
+  <div class="st"><b>5</b><span>紅綠燈</span><i>7 分・全班投票</i></div>
+  <div class="st"><b>6</b><span>真實案例</span><i>4 分</i></div>
+  <div class="st"><b>7</b><span>講話前先想想</span><i>6 分・動畫 3・宣言</i></div>
+ </div>
+ <p class="note">換班上課前，按網頁右上角「換下一班」連按兩次，就會清空投票、班級名稱與測驗進度。各步驟的操作與分級提問，請看教學指引。</p>
+</section>
+
+<section class="blk wrap" id="guide">
+ <div class="sh"><h2>教學指引</h2></div>
+ <article class="card doc">
+  <div class="thumb"><svg viewBox="0 0 120 160" width="120" aria-hidden="true"><rect x="4" y="4" width="112" height="152" rx="6" fill="#fff" stroke="#dedbd2" stroke-width="3"/><rect x="18" y="20" width="70" height="10" rx="3" fill="#1b2540"/><rect x="18" y="26" width="76" height="6" fill="#ffe066" opacity=".8"/><g fill="#c9cfdc"><rect x="18" y="46" width="84" height="5" rx="2"/><rect x="18" y="58" width="76" height="5" rx="2"/><rect x="18" y="70" width="80" height="5" rx="2"/></g><g fill="#e7edff" stroke="#2a55e0" stroke-width="1.5"><rect x="18" y="86" width="84" height="44" rx="3"/></g><path d="M18 100h84M18 114h84M46 86v44M74 86v44" stroke="#2a55e0" stroke-width="1"/></svg></div>
+  <div class="bd">
+   <h3>一個詞的重量　教學指引</h3>
+   <p>宣導目標、流程總表、各步驟操作與中／高年級分級提問、國中版說明、真實案例來源、動畫說明、學習單與成效紀錄表、注意事項。</p>
+   <div class="acts">
+    <a class="act pri" href="guide.html" target="_blank" rel="noopener">線上閱讀</a>
+    <a class="act" href="files/guide.pdf" download="一個詞的重量_教學指引.pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>下載 PDF</a>
+    <a class="act" href="files/guide.docx" download="一個詞的重量_教學指引.docx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>下載 Word</a>
+   </div>
+  </div>
+ </article>
+</section>
+
+<section class="blk wrap" id="paper">
+ <div class="sh"><h2>學習單與證書</h2><p>A4 列印用。</p></div>
+ <div class="grid g3">
+  <article class="card">
+   <a class="pic" href="files/worksheet.pdf" target="_blank" rel="noopener" style="aspect-ratio:4/3;background:#f6f5f1"><img src="img/worksheet.png" alt="學習單預覽" style="object-fit:contain;padding:12px" loading="lazy"></a>
+   <div class="bd">
+    <h3>學習單</h3>
+    <div class="tags"><span class="tag">A4 直式一頁</span><span class="tag y">附詞語與開頭句提示</span></div>
+    <p>五大題：認識唐氏症、角色感受、暱稱或取笑、換句話說、我的語言約定。</p>
+    <div class="acts">
+     <a class="act pri" href="files/worksheet.pdf" download="一個詞的重量_學習單.pdf">下載 PDF</a>
+     <a class="act" href="files/worksheet.docx" download="一個詞的重量_學習單.docx">下載 Word</a>
+    </div>
+   </div>
+  </article>
+  <article class="card">
+   <a class="pic" href="files/certificate-es.pdf" target="_blank" rel="noopener" style="aspect-ratio:4/3;background:#f6f5f1"><img src="img/cert-es.png" alt="語言小守護者宣言預覽" style="object-fit:contain;padding:12px" loading="lazy"></a>
+   <div class="bd">
+    <h3>語言小守護者宣言</h3>
+    <div class="tags"><span class="tag">國小版</span><span class="tag">A4 橫式</span></div>
+    <p>班級和日期留白，列印後請全班簽名，貼在教室。</p>
+    <div class="acts"><a class="act pri" href="files/certificate-es.pdf" download="語言小守護者宣言_國小版.pdf">下載 PDF</a></div>
+   </div>
+  </article>
+  <article class="card">
+   <a class="pic" href="files/certificate-jh.pdf" target="_blank" rel="noopener" style="aspect-ratio:4/3;background:#f6f5f1"><img src="img/cert-jh.png" alt="班級語言宣言預覽" style="object-fit:contain;padding:12px" loading="lazy"></a>
+   <div class="bd">
+    <h3>班級語言宣言</h3>
+    <div class="tags"><span class="tag">國中版</span><span class="tag">A4 橫式</span></div>
+    <p>不說、不推、私訊提醒、站在旁邊，全班簽名後張貼。</p>
+    <div class="acts"><a class="act pri" href="files/certificate-jh.pdf" download="班級語言宣言_國中版.pdf">下載 PDF</a></div>
+   </div>
+  </article>
+ </div>
+</section>
+
+<section class="blk wrap" id="more">
+ <div class="sh"><h2>其他資源</h2></div>
+ <div class="grid g3">
+  <article class="card"><div class="bd">
+   <h3>教材包封面</h3><p>橫式 16:9 可當簡報或資料夾封面；直式 A4 可放在成果冊第一頁。</p>
+   <div class="acts"><a class="act" href="files/kit-cover-16x9.png" download="一個詞的重量_教材包封面_橫式.png">橫式 PNG</a><a class="act" href="files/kit-cover-a4.pdf" download="一個詞的重量_教材包封面_A4.pdf">直式 A4 PDF</a></div>
+  </div></article>
+  <article class="card"><div class="bd">
+   <h3>唐寶寶大聲說</h3><p>唐氏症基金會的影片系列，由唐氏症者親自分享工作、夢想和生活，可搭配第 3 步使用。</p>
+   <div class="acts"><a class="act" href="https://www.youtube.com/playlist?list=PLzDGVn1Tpxeogu9E_VOs95X8mxY01aSL0" target="_blank" rel="noopener">開啟 YouTube 播放清單</a></div>
+  </div></article>
+  <article class="card"><div class="bd">
+   <h3>配音工具</h3><p>要修改動畫台詞時，用微軟台灣語音重新配音（Windows／Mac）。</p>
+   <div class="acts"><a class="act" href="files/voice-tool.zip" download="一個詞的重量_微軟配音工具.zip">下載 ZIP</a></div>
+  </div></article>
+ </div>
+ <div class="all">
+  <div><h3>一次下載全部</h3><p>互動網頁（可離線使用）、三支動畫、學習單、教學指引、證書、封面與配音工具。</p></div>
+  <a class="btn" href="files/word-weight-kit.zip" download="一個詞的重量_完整教材包.zip">下載完整教材包 ZIP</a>
+ </div>
+</section>
+</main>
+
+<footer class="wrap">「一個詞，有它的重量；說出口的話，要自己負責。」</footer>
+
+<dialog id="dlg" aria-label="播放動畫">
+ <div class="bar"><b id="dlgT"></b><button class="x" id="dlgX" type="button">關閉</button></div>
+ <video id="dlgV" controls playsinline preload="none"></video>
+</dialog>
+
+<script>
+const V=[
+ {n:1,t:"一句玩笑話",d:"3:22",f:"video/1-joke.mp4",img:"img/cover1.jpg",p:"阿哲笑小宇「很唐」，小晴的弟弟就是唐氏症者。最後老師說明為什麼不要這樣說。",s:"第 2 步"},
+ {n:2,t:"認識唐氏症",d:"2:22",f:"video/2-down-syndrome.mp4",img:"img/cover2.jpg",p:"第 21 對染色體、不會傳染、早期療育、3/21 世界唐氏症日，以及「唐寶寶」這個詞。",s:"第 3 步"},
+ {n:3,t:"講話前先想想",d:"2:14",f:"video/3-think-first.mp4",img:"img/cover3.jpg",p:"不只是唐、紅綠燈、換句話說，以及「一個詞的重量」：說出口的話要自己負責。",s:"第 7 步"}];
+const dl='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>';
+document.getElementById("vids").innerHTML=V.map(v=>`<article class="card">
+ <button class="pic" type="button" data-v="${v.n}" aria-label="播放動畫 ${v.n}：${v.t}"><img src="${v.img}" alt="" loading="lazy"><span class="dur">${v.d}</span></button>
+ <div class="bd"><h3>動畫 ${v.n}　${v.t}</h3><div class="tags"><span class="tag">${v.s}</span><span class="tag y">1080p</span></div><p>${v.p}</p>
+ <div class="acts"><button class="act pri" type="button" data-v="${v.n}">線上播放</button><a class="act" href="${v.f}" download="動畫${v.n}_${v.t}.mp4">${dl}下載 MP4</a></div></div></article>`).join("");
+const dlg=document.getElementById("dlg"),vid=document.getElementById("dlgV");
+document.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{const v=V[+b.dataset.v-1];document.getElementById("dlgT").textContent=`動畫 ${v.n}　${v.t}`;vid.poster=v.img;vid.src=v.f;dlg.showModal();vid.play().catch(()=>{})});
+const close=()=>{vid.pause();dlg.close()};
+document.getElementById("dlgX").onclick=close;
+dlg.addEventListener("close",()=>vid.pause());
+dlg.addEventListener("click",e=>{if(e.target===dlg)close()});
+</script>
+</body>
+</html>

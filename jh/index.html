@@ -1,0 +1,1373 @@
+<title>一個詞的重量 國中版</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap">
+<style>
+/* Layout: header with version switch, sticky step rail, one panel per lesson step; projector-sized type. Storybook treatment: paper-textured ground, serif display, soft watercolor accents. */
+:root{
+  --bg:#f6efe0; --paper:#fffaf0; --tex:url("paper_tile.jpg"); --ink:#132a5c; --muted:#5d6782; --line:#e6dfd0;
+  --blue:#132a5c; --blue-soft:#e4eef6; --sun:#f8c873; --sun-soft:#fdeccb;
+  --sky:#74c6e4; --coral:#f39a8b; --mint:#7fc395;
+  --good:#2f9a5e; --warn:#d99000; --bad:#d9463b;
+  --board:#2f5d4a; --wall:#f3eee2; --floor:#e2d6c2; --skin:#f6d7b8;
+  --display:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1520; --tex:none; --paper:#182131; --ink:#e7ecf5; --muted:#9aa6ba; --line:#2b374b;
+  --blue:#6fa2f0; --blue-soft:#1d2d47; --sun:#f6c445; --sun-soft:#3a3018;
+  --good:#4cc38a; --warn:#f0a43c; --bad:#ef6b6b;
+  --board:#24493a; --wall:#1c2638; --floor:#3a3428; --skin:#e8c4a0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1520; --tex:none; --paper:#182131; --ink:#e7ecf5; --muted:#9aa6ba; --line:#2b374b;
+  --blue:#6fa2f0; --blue-soft:#1d2d47; --sun:#f6c445; --sun-soft:#3a3018;
+  --good:#4cc38a; --warn:#f0a43c; --bad:#ef6b6b;
+  --board:#24493a; --wall:#1c2638; --floor:#3a3428; --skin:#e8c4a0; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg) var(--tex) repeat;color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.7}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:900;text-wrap:balance;line-height:1.3;margin:0}
+h2{font-size:clamp(1.6rem,3.2vw,2.3rem)}
+h3{font-size:1.3rem}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+button:disabled{opacity:.45;cursor:default}
+.opt:disabled{opacity:1}
+button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+header.top{padding-block:24px 14px}
+.brand{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.brand .id{display:flex;gap:16px;align-items:center;min-width:0}
+.brand h1{font-size:clamp(2rem,5vw,3rem)}
+.brand .sub{color:var(--muted);font-size:.98rem}
+.seg{display:flex;border:1.5px solid var(--blue);border-radius:12px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--blue);padding:8px 14px;font-weight:700;display:grid;line-height:1.3;text-align:left}
+.seg button small{font-weight:400;font-size:.8rem;opacity:.85}
+.seg button[aria-pressed="true"]{background:var(--blue);color:var(--paper)}
+
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.tabrow{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:thin}
+.tabrow a{flex:none;text-decoration:none;color:var(--muted);padding:7px 13px;border-radius:999px;font-weight:500;font-size:.95rem;white-space:nowrap}
+.tabrow a .n{font-family:var(--display);color:var(--blue);margin-right:4px}
+.tabrow a .m{font-size:.78rem;opacity:.8;margin-left:4px}
+.tabrow a[aria-current="page"]{background:var(--blue);color:var(--paper)}
+.tabrow a[aria-current="page"] .n{color:var(--sun)}
+
+main{padding-block:26px 64px}
+section.panel{display:grid;gap:22px}
+.lead{font-size:1.1rem;color:var(--muted);max-width:62ch}
+.step{display:inline-block;font-size:.85rem;letter-spacing:.1em;color:var(--blue);font-weight:700;margin-bottom:4px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px}
+.btn{border:0;border-radius:10px;padding:10px 18px;background:var(--blue);color:var(--paper);font-weight:700;text-decoration:none;display:inline-block}
+.btn.ghost{background:transparent;color:var(--blue);border:1.5px solid var(--blue)}
+.btn.sun{background:var(--sun);color:#2a1e00}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.teacher{border-left:4px solid var(--sun);background:var(--sun-soft);padding:12px 16px;border-radius:0 10px 10px 0;font-size:.98rem;display:grid;gap:6px}
+.lv{display:inline-block;font-size:.78rem;font-weight:700;padding:1px 8px;border-radius:6px;margin-right:6px;background:var(--blue-soft);color:var(--blue)}
+.lv.hi{background:var(--blue);color:var(--paper)}
+.muted{color:var(--muted)}
+.ver{font-size:.82rem;color:var(--muted);border:1px dashed var(--line);border-radius:8px;padding:2px 10px;justify-self:start}
+
+/* poll */
+.poll{display:grid;gap:12px}
+.poll .q{font-family:var(--display);font-size:1.35rem}
+.bar{height:14px;background:var(--blue-soft);border-radius:8px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--blue);width:0;transition:width .4s}
+.counter{display:flex;align-items:center;gap:10px}
+.counter output{font-size:2rem;font-family:var(--display);min-width:3ch;text-align:center;font-variant-numeric:tabular-nums}
+.counter button{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);font-size:1.3rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px;min-height:44px}
+.chip{background:var(--blue-soft);color:var(--ink);border-radius:999px;padding:6px 14px}
+input[type=text],input[type=number],textarea{font:inherit;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink)}
+input[type=text],textarea{width:100%}
+textarea{min-height:84px;resize:vertical}
+.reveal{display:grid;gap:10px;background:var(--blue);color:var(--paper);border-radius:14px;padding:22px}
+.reveal h3{font-size:1.6rem}
+.reveal p{color:var(--paper);opacity:.92}
+
+/* stage (drama) */
+.stage{background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.stage svg{display:block;width:100%;height:auto}
+.cap{padding:14px 18px;font-family:var(--display);font-size:clamp(1.15rem,2.6vw,1.6rem);min-height:3.6em;border-top:1px solid var(--line);display:flex;gap:12px;align-items:flex-start}
+.cap .sn{font-family:var(--body);font-size:.8rem;color:var(--blue);font-weight:700;padding-top:.5em;flex:none}
+.ch{transition:transform .9s cubic-bezier(.4,.1,.3,1),opacity .6s}
+.ch .hd{fill:var(--skin);stroke:var(--ink);stroke-width:2}
+.ch .eye{fill:var(--ink)}
+.ch .mo{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round}
+.ch .tr{fill:var(--blue);opacity:0;transition:opacity .4s}
+.ch.cry .tr{opacity:1}
+.ch .nm{fill:var(--ink);font-family:var(--body);font-size:14px;font-weight:700}
+.ch.spot .hd{stroke:var(--sun);stroke-width:4}
+.bob{animation:bob 1s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-4px)}}
+.bub rect{fill:var(--paper);stroke:var(--ink);stroke-width:2}
+.bub text{fill:var(--ink);font-family:var(--display);font-size:19px}
+.bub.hurt rect{stroke:var(--bad);stroke-width:3}
+.bub.kind rect{stroke:var(--good);stroke-width:3}
+.bub{animation:pop .35s ease-out both}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dots button{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:var(--paper);color:var(--muted);font-size:.8rem;padding:0}
+.dots button[aria-current="true"]{background:var(--blue);border-color:var(--blue);color:var(--paper)}
+
+/* chromosome */
+.svgbox{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px;overflow-x:auto}
+.svgbox svg{display:block;width:100%;height:auto;min-width:300px}
+.chr{fill:var(--blue)} .chr-other{fill:var(--muted);opacity:.55} .chr-extra{fill:var(--sun)}
+.lbl{fill:var(--ink);font-family:var(--body);font-size:15px}
+.lbl-s{fill:var(--muted);font-family:var(--body);font-size:12px}
+.play .drop{animation:drop 1.4s cubic-bezier(.3,1.4,.5,1) .4s both}
+.play .glow{animation:glow 1.6s ease-in-out 1.8s 2 both}
+.play .tag{animation:fadein .6s ease 1.8s both}
+@keyframes drop{from{transform:translateY(-140px);opacity:0}to{transform:none;opacity:1}}
+@keyframes glow{0%,100%{opacity:0}50%{opacity:.45}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.facts{display:grid;gap:12px}
+.fact{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+.fact .k{font-family:var(--display);font-size:1.7rem;color:var(--blue);min-width:3.5ch;line-height:1.1}
+.can{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr));gap:10px}
+.can div{background:var(--sun-soft);border-radius:10px;padding:12px;text-align:center;font-weight:500;display:grid;gap:6px;justify-items:center}
+.can svg{width:40px;height:40px}
+.can svg *{fill:none;stroke:var(--blue);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.canplay div{animation:rise .5s ease-out both}
+@keyframes rise{from{opacity:0;transform:translateY(14px) scale(.9)}to{opacity:1;transform:none}}
+
+/* nickname */
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.side{border-radius:14px;padding:18px;display:grid;gap:10px;border:2px solid}
+.side.warm{border-color:var(--good);background:color-mix(in srgb,var(--good) 8%,var(--paper))}
+.side.cold{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 7%,var(--paper))}
+.side .tag2{font-weight:700;font-size:.9rem}
+.side.warm .tag2{color:var(--good)} .side.cold .tag2{color:var(--bad)}
+.side ul{margin:0;padding-left:1.2em}
+.judge{display:grid;gap:12px}
+.jline{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+.jline .s{font-family:var(--display);font-size:1.2rem}
+.jline .b{display:flex;gap:6px}
+.jline .b button{border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:6px 12px}
+.jline .fb{grid-column:1/-1;font-size:.95rem;color:var(--muted)}
+.jline.ok{border-color:var(--good)} .jline.no{border-color:var(--warn)}
+@media (max-width:560px){.jline{grid-template-columns:1fr}}
+
+/* 前後測 */
+.qslide .pp{width:min(100%,640px);margin-top:14px}
+.ppv{font:inherit;color:var(--ink);cursor:pointer}
+.ppv output{font-size:2rem}
+.ppq{font-size:1.15rem;margin:0 0 10px}
+.ppcmp{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px;display:grid;gap:10px}
+.ppcmp h4{margin:0;font-size:1.05rem}
+.pprow{display:grid;grid-template-columns:7em 1fr;gap:10px;align-items:center}
+.pprow .pl{font-weight:700}
+.ppb{display:grid;grid-template-columns:1fr 8.5em;gap:4px 10px;align-items:center}
+.ppb b{font-weight:500;font-size:.9rem;font-variant-numeric:tabular-nums;color:var(--muted)}
+.ppb .bar{height:14px;border-radius:7px;background:var(--line);overflow:hidden}
+.ppb .bar i{display:block;height:100%;border-radius:7px}
+.ppb i.pre{background:#9aa6ba}.ppb i.post{background:var(--blue)}
+@media (max-width:520px){.pprow{grid-template-columns:1fr}}
+/* certificate */
+.certwrap{border-radius:10px;overflow:hidden;box-shadow:0 6px 20px rgba(19,42,92,.15)}
+.cert{display:block;width:100%;height:auto}
+.certwrap:fullscreen{background:#1b2233;display:grid;place-items:center;border-radius:0}
+.certwrap:fullscreen .cert{width:auto;height:auto;max-width:100vw;max-height:100vh}
+@media print{@page{size:A4 landscape;margin:0}
+ body *{visibility:hidden}
+ .certwrap,.certwrap *{visibility:visible}
+ .certwrap{position:fixed;inset:0;box-shadow:none;border-radius:0}
+ .cert{width:100%;height:100%}}
+/* challenge & quiz */
+.scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,130px),1fr));gap:10px}
+.team{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:4px;text-align:center}
+.team .nm{font-weight:700}
+.team .pt{font-family:var(--display);font-size:2rem;font-variant-numeric:tabular-nums}
+.team .ctl{display:flex;justify-content:center;gap:6px}
+.team .ctl button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:2px 12px}
+.qcard{display:grid;gap:16px}
+.qhead{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.qtext{font-family:var(--display);font-size:clamp(1.4rem,3vw,2rem)}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.opts{grid-template-columns:1fr}}
+.opt{text-align:left;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:12px;padding:12px 14px;font-size:1.08rem;display:flex;gap:10px}
+.opt .l{font-family:var(--display);color:var(--blue);font-weight:700}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%,var(--paper))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--paper))}
+.explain{border-radius:12px;padding:14px 16px;background:var(--blue-soft)}
+.qprog{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.qprog span{display:block;height:100%;background:var(--sun);transition:width .3s}
+.result{text-align:center;display:grid;gap:12px;justify-items:center}
+.result .big{font-family:var(--display);font-size:4rem;color:var(--blue);line-height:1}
+
+/* ripple */
+.ripple-stage .ring{fill:none;stroke:var(--bad);stroke-width:3;opacity:0}
+.ripple-stage.go .ring{animation:ring 2.4s ease-out infinite}
+.ripple-stage.go .ring:nth-of-type(2){animation-delay:.8s}
+.ripple-stage.go .ring:nth-of-type(3){animation-delay:1.6s}
+.ripple-stage.kind .ring{stroke:var(--good)}
+@keyframes ring{0%{r:30;opacity:.8}100%{r:230;opacity:0}}
+.face{fill:var(--sun-soft);stroke:var(--ink);stroke-width:2}
+.mouth{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round}
+.tear{fill:var(--blue);opacity:0;transition:opacity .5s}
+.sad .tear{opacity:1}
+.bubble{fill:var(--paper);stroke:var(--bad);stroke-width:2.5}
+.kind .bubble{stroke:var(--good)}
+.btxt{fill:var(--ink);font-family:var(--display);font-size:20px}
+
+/* sort */
+.scen{display:grid;gap:14px}
+.scen .say{font-family:var(--display);font-size:clamp(1.3rem,2.8vw,1.8rem);background:var(--sun-soft);padding:16px 18px;border-radius:12px}
+.votes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.vote{border-radius:14px;padding:18px 8px;justify-items:center;text-align:center;border:1.5px solid var(--line);background:var(--paper);display:grid;gap:6px}
+.vote .t{font-weight:700}
+.vote.ok .t{color:var(--good)} .vote.mid .t{color:var(--warn)} .vote.hurt .t{color:var(--bad)}
+.vote .ctl{display:flex;justify-content:center;gap:6px}
+.vote .ctl button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;width:36px;height:36px}
+.vote output{font-family:var(--display);font-size:1.8rem;font-variant-numeric:tabular-nums}
+.vbar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.vbar span{display:block;height:100%;width:0;transition:width .3s}
+.ok .vbar span{background:var(--good)} .mid .vbar span{background:var(--warn)} .hurt .vbar span{background:var(--bad)}
+
+/* traffic light */
+.light{width:34px;height:78px;margin:0 auto;border:2.5px solid var(--ink);border-radius:10px;display:grid;grid-template-rows:repeat(3,1fr);gap:3px;padding:4px;background:var(--paper)}
+.light i{display:block;border-radius:50%;border:2px solid var(--ink);opacity:.9}
+.ok .light i:nth-child(3){background:var(--good)}
+.mid .light i:nth-child(2){background:var(--sun)}
+.hurt .light i:nth-child(1){background:var(--bad)}
+.scen .whoq{justify-self:end;background:var(--ink);color:var(--paper);padding:4px 12px;font-weight:700;border-radius:4px}
+
+/* promise */
+.slogan{text-align:center;font-weight:900;font-size:clamp(1.6rem,4vw,2.6rem);line-height:1.4;padding-block:18px;position:relative}
+.slogan small{display:block;font-size:.5em;font-weight:500;color:var(--muted)}
+.flips{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+.flip{border:0;border-radius:14px;padding:18px 16px;min-height:120px;text-align:left;display:grid;gap:6px;align-content:center;background:var(--coral);color:var(--ink)}
+.flip .lab{font-size:.8rem;font-weight:700;opacity:.8}
+.flip .w{font-size:1.4rem;font-weight:900}
+.flip.on{background:var(--mint)}
+.vows{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+.vow{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:6px}
+.vow b{font-size:1.5rem;font-weight:900}
+.vow:nth-child(4) b{color:var(--coral)} .vow:nth-child(1) b{color:var(--sky)} .vow:nth-child(2) b{color:var(--warn)} .vow:nth-child(3) b{color:var(--good)}
+.mascot{flex:none}
+.deco{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+
+
+/* answer feedback */
+.fxlayer{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+.cf{position:absolute;width:10px;height:14px;border-radius:2px;animation:cf 1.1s cubic-bezier(.2,.7,.4,1) forwards}
+@keyframes cf{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0}}
+.stamp{position:absolute;transform:translate(-50%,-50%);font-weight:900;font-size:3.2rem;line-height:1;animation:stamp .9s ease-out forwards}
+.stamp.g{color:var(--good)} .stamp.b{color:var(--bad)}
+@keyframes stamp{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}25%{transform:translate(-50%,-50%) scale(1.25);opacity:1}60%{transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-90%) scale(1);opacity:0}}
+.shake{animation:shake .45s ease-in-out}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.pulse{animation:pulse .6s ease-out}
+@keyframes pulse{0%{transform:scale(1)}40%{transform:scale(1.05)}100%{transform:scale(1)}}
+.sound{border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:8px 12px;font-weight:700}
+/* film player */
+.film{background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.fv{aspect-ratio:16/9;max-width:100%;background:var(--bg)}
+.fv svg{width:100%;height:100%}
+.fbar{display:flex;gap:12px;align-items:center;padding:10px 14px;border-top:1px solid var(--line)}
+.fbar input{flex:1;min-width:0;accent-color:var(--blue)}
+.vsel{font:inherit;font-size:.85rem;padding:4px 6px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);max-width:11em}
+.film:fullscreen{display:grid;grid-template-rows:1fr auto;background:#000;border-radius:0}
+.film:fullscreen .fv{aspect-ratio:auto;width:100%;height:100%;max-height:calc(100vh - 70px)}
+.film:fullscreen .fv svg{height:100%}
+.fs{padding:6px 12px;font-size:.9rem}
+.ftime{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.9rem;white-space:nowrap}
+.vote{font:inherit;color:var(--ink);cursor:pointer;transition:transform .15s,border-color .15s}
+.vote:hover{transform:translateY(-2px)}
+.vote.ok:hover{border-color:var(--good)} .vote.mid:hover{border-color:var(--warn)} .vote.hurt:hover{border-color:var(--bad)}
+.vote .light{width:46px;height:104px}
+.vote output{font-size:2.4rem}
+.vote.bump{animation:bump .3s ease-out}
+@keyframes bump{40%{transform:scale(1.06)}}
+[hidden]{display:none!important}
+.vote .vbar{width:100%}
+.sortnav{display:grid;grid-template-columns:auto 1fr auto;gap:10px}
+.sortnav #op{justify-self:center}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;padding:0;font-size:.9rem}
+.qslide{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(28px,6vw,64px) clamp(18px,4vw,48px);min-height:min(60vh,460px);display:grid;align-content:center;justify-items:center;text-align:center;gap:18px}
+.qslide.rev{background:var(--blue);color:var(--paper);border-color:var(--blue)}
+.qk{font-weight:700;letter-spacing:.12em;color:var(--blue);font-size:1rem}
+.qslide.rev .qk{color:var(--sun)}
+.qbig{font-family:var(--display);font-weight:900;font-size:clamp(1.8rem,4.6vw,3.2rem);line-height:1.35;text-wrap:balance}
+.qhint{color:var(--muted);font-size:1.1rem}
+.qp{max-width:40ch;font-size:1.15rem;opacity:.95}
+.qwords{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.qw{background:var(--sun-soft);border-radius:999px;padding:10px 22px;font-size:1.3rem;font-weight:700;animation:pop .35s ease-out both}
+.qdots{display:flex;gap:8px;justify-content:center;align-items:center}
+.qdots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.qdots i.on{background:var(--blue);width:26px;border-radius:5px}
+.chatwin{background:#9bb3cf;border:1px solid var(--line);border-radius:24px;overflow:hidden;max-width:420px;width:100%;justify-self:center;box-shadow:0 0 0 8px #1d1f24,0 14px 30px rgba(0,0,0,.25);margin:8px 0}
+.chathead{background:#283245;color:#fff;padding:12px 14px;font-weight:700;display:flex;gap:6px;align-items:center;font-family:var(--body)}
+.chathead span{font-weight:400;opacity:.8}
+.chathead .cbk{font-size:1.6rem;line-height:1;opacity:1;margin-right:4px}
+.chathead .cicons{margin-left:auto;letter-spacing:8px}
+.chatbody{padding:14px 12px;display:grid;gap:12px;min-height:380px;max-height:62vh;overflow:auto;align-content:start;font-family:var(--body)}
+.cmsg{display:flex;gap:8px;align-items:flex-start;animation:pop .3s ease-out both}
+.cmsg.me{justify-content:flex-end}
+.cav{flex:none;width:38px;height:38px;border-radius:50%;color:#fff;display:grid;place-items:center;font-weight:700;font-size:.95rem}
+.cmain{display:grid;gap:3px;min-width:0}
+.cmsg.me .cmain{justify-items:end}
+.cwho{font-size:.78rem;color:#24324a}
+.crow{display:flex;align-items:flex-end;gap:6px}
+.cmsg.me .crow{flex-direction:row-reverse}
+.ctm{font-size:.68rem;color:#2f3d55;line-height:1.25;white-space:nowrap;text-align:right}
+.cmsg:not(.me) .ctm{text-align:left}
+.cbub{background:#fff;color:#1d2433;padding:8px 13px;border-radius:18px;font-size:1.05rem;max-width:250px;line-height:1.5}
+.cmsg.me .cbub{background:#8fe07a}
+.cimg{width:230px;border-radius:14px;overflow:hidden;background:#000;line-height:0}
+.cimg svg{display:block;width:100%;height:auto}
+.cstk{width:130px;line-height:0}
+.cstk svg{display:block;width:100%;height:auto}
+.csys{justify-self:center;font-size:.75rem;color:#fff;background:rgba(40,50,69,.45);padding:2px 12px;border-radius:999px}
+.chatstage{display:grid;grid-template-columns:minmax(0,1fr);justify-items:center;gap:22px;align-items:start}
+.chatcol{display:grid;gap:14px;width:100%;max-width:440px;justify-items:center}
+.chatcol .sortnav{width:100%}
+@media (min-width:900px){
+ .chatstage.done{grid-template-columns:440px minmax(0,1fr);justify-items:stretch}
+ .chatstage.done .chatcol{justify-self:start}
+ .chatside{position:sticky;top:90px}
+}
+.chatside{display:grid;gap:16px;width:100%;align-content:start}
+.slidein{animation:slideIn .55s cubic-bezier(.2,.8,.2,1) both}
+.chatside.slidein{animation-delay:.12s}
+@keyframes slideIn{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:none}}
+@media (max-width:899px){@keyframes slideIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}}
+@media (prefers-reduced-motion:reduce){.slidein{animation:none}}
+/* worksheet */
+.ws{display:grid;gap:18px}
+.ws label{font-weight:700;display:block;margin-bottom:6px}
+.swap{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.swap span{color:var(--muted)}
+.steps4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.steps4 div{border-top:3px solid var(--blue);padding-top:10px}
+.steps4 b{font-family:var(--display);font-size:1.2rem;display:block}
+.navfoot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:18px}
+a{color:var(--blue)}
+@media (max-width:520px){.votes{grid-template-columns:1fr}.swap{grid-template-columns:1fr}.swap span{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.case{background:var(--paper);border:2px solid var(--line);border-radius:22px;padding:20px;display:grid;gap:14px;align-content:start;box-shadow:var(--shadow,none)}
+.cno{justify-self:start;background:var(--blue-soft);color:var(--blue);font-weight:700;border-radius:999px;padding:2px 12px;font-size:.9rem}
+.cwhat{font-size:1.2rem;font-weight:500}
+.case .btn{justify-self:start}
+.cres{background:var(--sun-soft);border:2px dashed var(--sun);border-radius:16px;padding:12px 14px;display:grid;gap:6px;animation:pop .35s ease-out both}
+.cres a{font-size:.85rem}
+
+/* ===== 一頁看完：不必上下捲動 ===== */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:root{--avail:calc(100vh - 335px)}
+header.top{padding-block:8px 6px}
+.brand h1{font-size:clamp(1.5rem,2.6vw,2rem)}
+.brand h1::after{height:6px;margin-top:-7px}
+.tabrow{padding-block:7px}
+.tabrow a{padding-block:4px}
+main{padding-block:12px 14px}
+main .panel{gap:14px}
+main .panel>h2{font-size:clamp(1.4rem,2.4vw,1.9rem);margin:0}
+.navfoot{padding-top:10px;margin-top:2px}
+.navfoot .btn{padding:8px 18px}
+.psegs{display:flex;gap:8px;flex-wrap:wrap}
+.psegs button{font:inherit;font-weight:700;padding:8px 16px;border-radius:999px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.psegs button[aria-selected="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.ptab[hidden]{display:none}
+.ptab{display:grid;gap:14px}
+.duo,.duocol,.duoside{display:grid;gap:14px;align-content:start}
+.certduo{display:grid;gap:14px}
+.certctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+@media (min-width:900px) and (min-height:560px){
+ main.wrap{max-width:1280px}
+ .duo{grid-template-columns:minmax(0,1fr) minmax(260px,330px);align-items:start}
+ .duo.nick{grid-template-columns:minmax(260px,400px) minmax(0,1fr)}
+ .duo .film .fv{width:min(100%,calc((var(--avail) - 64px)*16/9));margin-inline:auto}
+ .duo .film{justify-self:center;width:min(100%,calc((var(--avail) - 64px)*16/9))}
+ .qslide{min-height:calc(var(--avail) - 20px)}
+ .certduo{grid-template-columns:minmax(0,1fr) 220px;align-items:start}
+ .certduo .certwrap{width:min(100%,calc((var(--avail) - 40px)*1.414));justify-self:center}
+ .certctl{flex-direction:column;align-items:stretch}
+ .certctl input{max-width:none}
+ .chatbody{max-height:calc(var(--avail) - 40px);min-height:0}
+ .jline{padding:8px 12px}
+ .judge{gap:8px}
+ .two{grid-template-columns:1fr}
+ .side{padding:12px 16px;gap:6px}
+ .scen .say{padding:12px 16px}
+ .vote{padding:10px 8px}
+ .cases{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+ .case{padding:16px;gap:10px}
+ .duo.nick .judge{grid-template-columns:1fr 1fr}
+ .duo.nick .jline{grid-template-columns:1fr;align-content:start}
+ .duo.nick .jline .s{font-size:1rem}
+ .duo.nick .jline .fb{font-size:.85rem}
+ .duo.nick .reveal{padding:16px 18px;gap:6px}
+ .duo.nick .reveal h3{font-size:1.2rem}
+ .duo.nick .reveal p,.duo.nick .side p{font-size:.95rem}
+ .duoside .slogan{font-size:clamp(1.3rem,2vw,1.7rem);padding-block:8px}
+ .scen{gap:10px}
+ .scen .say{font-size:clamp(1.3rem,2.4vw,1.7rem)}
+ .qslide{padding-block:24px}
+ .ptitle{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap}
+ main{padding-block:10px}
+ main .panel{gap:12px}
+ .duo.nick .jline{position:relative;padding-right:40px}
+ .jline .mk{position:absolute;top:8px;right:10px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#fff;background:var(--good)}
+ .jline.no .mk{background:var(--warn)}
+ .jfb{margin-top:10px;font-size:.98rem}
+ .jhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+ .jhead .btn{padding:6px 14px;font-size:.95rem}
+ header.top{padding-block:6px 4px}
+ .brand h1{font-size:clamp(1.35rem,2.2vw,1.7rem)}
+ header .sound{padding:4px 12px;font-size:.9rem}
+ .duo.nick .jline .b button{padding:5px 14px}
+}
+@media (min-width:1200px) and (min-height:560px){.duo.nick .judge{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:900px) and (min-height:560px){ .duo.nick .duocol{gap:10px}
+ .duo.nick .side h3{font-size:1.15rem}
+}
+@media (min-width:900px) and (min-height:560px){
+ .brand .id>div{display:flex;align-items:baseline;gap:12px}
+ .duo .vote{grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;align-items:center;justify-items:start;text-align:left;column-gap:14px;padding:10px 14px}
+ .duo .vote .light{grid-row:1/3;width:26px;height:58px;margin:0}
+ .duo .vote .t{grid-column:2}
+ .duo .vote output{grid-column:3;grid-row:1/3;font-size:2rem}
+ .duo .vote .vbar{grid-column:2;width:100%}
+ .chatside .grid2{grid-template-columns:1fr 1fr;gap:14px}
+ .chatside .card{padding:16px 18px}
+ .cwhat{font-size:1.02rem;line-height:1.6}
+ .cres{font-size:.9rem;line-height:1.55;padding:10px 12px}
+ .ptab[data-p="1"] .pp:has(.ppcmp){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);column-gap:24px;align-items:start}
+ .ptab[data-p="1"] .pp>.votes{grid-column:1}
+ .ptab[data-p="1"] .pp>.row{grid-column:1}
+ .ptab[data-p="1"] .ppcmp{grid-column:2;grid-row:1/3;margin-top:0;border-top:0;padding-top:0;border-left:1px dashed var(--line);padding-left:20px}
+}
+@media (min-width:900px) and (min-height:560px){
+ .wrap{max-width:1280px}
+ .chatbody{max-height:calc(var(--avail) - 64px)}
+ .cases{gap:12px}
+ .case{padding:14px;gap:8px}
+ .cwhat{font-size:.98rem}
+}
+@media (min-width:900px) and (min-height:560px) and (max-height:740px){html{font-size:15px}body{font-size:16.5px}}
+.ptab[data-p="1"] .pp:not(:has(.ppcmp)) .votes{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ptab[data-p="1"] .pp:not(:has(.ppcmp)) .ppv{min-height:clamp(140px,28vh,240px);align-content:center}
+.ptab[data-p="1"] .pp:not(:has(.ppcmp)) .ppv .t{font-size:1.5rem}
+.ptab[data-p="1"] .pp:not(:has(.ppcmp)) .ppv output{font-size:3.2rem}
+.ptab[data-p="1"] .ppq{font-size:1.35rem}
+
+/* ===== 視覺重設計：投影優先的單一亮色主題 =====
+   Layout: 白色標題列＋字卡式步驟列；內容用白卡、細框；重點用螢光筆標示，只用一個主色。 */
+:root{--bg:#f6f5f1; --paper:#ffffff; --tex:none; --ink:#1b2540; --muted:#4c5670; --line:#dedbd2;
+  --blue:#1d4f91; --blue-soft:#e6eef8; --sun:#ffcf3f; --sun-soft:#fff4cc; --mark:#ffe066;
+  --sky:#1d4f91; --coral:#1d4f91; --mint:#1d4f91; --grape:#1d4f91;
+  --good:#1e8f58; --warn:#c77700; --bad:#cf3b3b;
+  --board:#2f5d4a; --wall:#f3eee2; --floor:#e2d6c2; --skin:#f6d7b8;
+  --display:"Noto Serif TC","Songti TC","PMingLiU",serif; --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --shadow:0 1px 2px rgba(27,37,64,.06),0 4px 14px rgba(27,37,64,.06); color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#f6f5f1; --paper:#ffffff; --tex:none; --ink:#1b2540; --muted:#4c5670; --line:#dedbd2;
+  --blue:#1d4f91; --blue-soft:#e6eef8; --sun:#ffcf3f; --sun-soft:#fff4cc; --mark:#ffe066;
+  --sky:#1d4f91; --coral:#1d4f91; --mint:#1d4f91; --grape:#1d4f91;
+  --good:#1e8f58; --warn:#c77700; --bad:#cf3b3b;
+  --board:#2f5d4a; --wall:#f3eee2; --floor:#e2d6c2; --skin:#f6d7b8;
+  --display:"Noto Serif TC","Songti TC","PMingLiU",serif; --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --shadow:0 1px 2px rgba(27,37,64,.06),0 4px 14px rgba(27,37,64,.06); color-scheme:light}}
+:root[data-theme="dark"]{--bg:#f6f5f1; --paper:#ffffff; --tex:none; --ink:#1b2540; --muted:#4c5670; --line:#dedbd2;
+  --blue:#1d4f91; --blue-soft:#e6eef8; --sun:#ffcf3f; --sun-soft:#fff4cc; --mark:#ffe066;
+  --sky:#1d4f91; --coral:#1d4f91; --mint:#1d4f91; --grape:#1d4f91;
+  --good:#1e8f58; --warn:#c77700; --bad:#cf3b3b;
+  --board:#2f5d4a; --wall:#f3eee2; --floor:#e2d6c2; --skin:#f6d7b8;
+  --display:"Noto Serif TC","Songti TC","PMingLiU",serif; --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --shadow:0 1px 2px rgba(27,37,64,.06),0 4px 14px rgba(27,37,64,.06); color-scheme:light}
+body{background:var(--bg);color:var(--ink);font-size:18px;line-height:1.75}
+header.top{background:var(--paper);border-bottom:1px solid var(--line)}
+.brand h1{color:var(--ink);font-family:var(--display);font-weight:900;letter-spacing:.04em;background:linear-gradient(transparent 62%,var(--mark) 62%,var(--mark) 92%,transparent 92%);display:inline;padding-inline:4px}
+.brand h1::after{display:none}
+.brand .sub{color:var(--muted);font-weight:700;letter-spacing:.1em;font-size:.85rem;border:1.5px solid var(--line);border-radius:6px;padding:0 8px}
+nav.tabs{background:var(--paper);box-shadow:none;border-bottom:1px solid var(--line)}
+.tabrow a{--c:var(--blue);background:transparent;border:1.5px solid transparent;color:var(--muted);font-weight:700;border-radius:10px;padding:5px 12px 5px 6px;box-shadow:none}
+.tabrow a .n{width:26px;height:26px;border-radius:8px;background:var(--bg);color:var(--ink);border:1.5px solid var(--line);font-family:var(--body);font-weight:700;display:inline-grid;place-items:center;margin-right:6px}
+.tabrow a:hover{color:var(--ink);background:var(--bg);transform:none}
+.tabrow a[aria-current="page"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.tabrow a[aria-current="page"] .n{background:#fff;color:var(--blue);border-color:#fff}
+main .panel>h2,.ptitle h2{font-family:var(--display);font-weight:900;color:var(--ink);letter-spacing:.02em}
+h3{font-family:var(--display);font-weight:900;color:var(--ink)}
+.card,.qslide,.film,.svgbox,.case,.side,.jline,.vote,.vow,.flip{box-shadow:var(--shadow)}
+.card,.qslide,.film,.case{background:var(--paper);border:1px solid var(--line);border-radius:16px}
+.qslide::before{height:8px;background:var(--mark)}
+.qslide.rev{background:var(--blue);border-color:var(--blue)}
+.qk{background:var(--blue-soft);color:var(--blue);font-weight:700;letter-spacing:.12em}
+.qbig{color:var(--ink);font-family:var(--display);font-weight:900}
+.qslide.rev .qbig{color:#fff}
+.qw{border:2px solid var(--ink);box-shadow:4px 4px 0 var(--mark);background:var(--paper);color:var(--ink);border-radius:10px}
+.btn{border-radius:12px;box-shadow:none;font-weight:700;background:var(--blue);color:#fff}
+.btn:active{transform:translateY(1px);box-shadow:none}
+.btn.ghost{background:var(--paper);border:1.5px solid var(--line);color:var(--ink);box-shadow:none}
+.btn.ghost:hover{border-color:var(--ink)}
+.btn.sun{background:var(--sun);color:#2a2000;border:0}
+.btn:disabled{opacity:.4}
+.btn:focus-visible,button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+.sound{border:1.5px solid var(--line);box-shadow:none;background:var(--paper);color:var(--ink);border-radius:10px}
+.navfoot{border-top:1px solid var(--line)}
+.explain,.cres{background:var(--sun-soft);border:0;border-left:5px solid var(--sun);border-radius:10px;color:var(--ink)}
+.reveal{background:var(--blue);color:#fff;border-radius:16px}
+.reveal h3{color:#fff}
+.side{background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--good);border-radius:14px}
+.side.cold{border-top-color:var(--bad)}
+.tag2{font-weight:700;letter-spacing:.06em}
+.jline{border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+.jline.ok{border-color:var(--good);background:color-mix(in srgb,var(--good) 6%,var(--paper))}
+.jline.no{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 7%,var(--paper))}
+.jline .b button{border:1.5px solid var(--line);border-radius:10px;box-shadow:none;background:var(--paper);color:var(--ink);font-weight:700}
+.jline .b button:hover{border-color:var(--ink)}
+.scen .say{background:var(--paper);border:2px solid var(--ink);border-radius:14px;box-shadow:6px 6px 0 var(--mark);font-family:var(--display);font-weight:900;color:var(--ink)}
+.vote{border:1.5px solid var(--line);border-radius:14px;background:var(--paper)}
+.vote.ok{background:var(--paper);border-color:color-mix(in srgb,var(--good) 45%,var(--line))}
+.vote.mid{background:var(--paper);border-color:color-mix(in srgb,var(--warn) 45%,var(--line))}
+.vote.hurt{background:var(--paper);border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
+.vote .t{font-family:var(--body);font-weight:700}
+.vote output{font-family:var(--body);font-weight:900;color:var(--ink);font-variant-numeric:tabular-nums}
+.ppv{background:var(--paper);border:1.5px solid var(--line);border-radius:14px}
+.ppv:hover{border-color:var(--blue)}
+.ppb i.post{background:var(--blue)}
+.opt{border:1.5px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink)}
+.opt:hover{border-color:var(--ink)}
+.opt .l{font-family:var(--body);font-weight:900;color:var(--blue)}
+.cno{background:var(--ink);color:#fff;border-radius:6px}
+.slogan{color:var(--ink)}
+.psegs button{border:1.5px solid var(--line);color:var(--muted)}
+.psegs button[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.fbar{border-top:1px solid var(--line);background:var(--paper)}
+.qdots i.on{background:var(--blue)}
+.linkbtn{color:var(--muted)}
+input[type=text]{border:1.5px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);font:inherit;padding:8px 12px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.opt{position:relative}
+.opt.right::after,.opt.wrong::after{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#fff;font-family:var(--body)}
+.opt.right::after{content:"✓";background:var(--good)}
+.opt.wrong::after{content:"✗";background:var(--bad)}
+.opt.right,.opt.wrong{padding-right:52px}
+html.bigtxt main{zoom:1.18}
+#bigtxt[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+a:not(.btn){text-underline-offset:3px}
+</style>
+
+<header class="top"><div class="wrap brand">
+  <div class="id">
+    <div><h1>一個詞的重量</h1></div>
+  </div>
+  <div class="row" style="gap:8px"><button type="button" class="sound" id="bigtxt" aria-pressed="false">字放大</button><button type="button" class="sound" id="newcls">換下一班</button><button type="button" class="sound" id="snd" aria-pressed="true">音效：開</button></div>
+</div></header>
+
+<nav class="tabs" aria-label="課程步驟"><div class="wrap tabrow" id="tabrow"></div></nav>
+<main class="wrap" id="main"></main>
+
+<script src="films.js"></script>
+<script src="timing.js"></script>
+<script>
+/* [id, 名稱, 完整版分鐘, 集會版分鐘(0=不使用)] */
+const TABS=[
+ ["start","開場",3,3],["chat","群組裡的一句話",8,8],["learn","認識唐氏症",7,7],
+ ["nickname","誰決定怎麼稱呼",4,4],["sort","紅綠燈：梗與留言",8,8],["cases","真實案例",5,5],
+ ["challenge","情境測驗",6,6],["promise","班級公約",5,5]];
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const mode="full";
+let timers=[];
+const clearTimers=()=>{timers.forEach(clearInterval);timers.forEach(clearTimeout);timers=[]};
+
+function list(){return TABS.filter(t=>mode==="full"||t[3]>0)}
+function current(){const h=location.hash.slice(1);const L=list();return L.some(t=>t[0]===h)?h:L[0][0]}
+function nav(){
+  const cur=current(),L=list();
+  $("#tabrow").innerHTML=L.map(([id,n,f,s],i)=>{return `<a href="#${id}" ${id===cur?'aria-current="page"':''}><span class="n">${i+1}</span>${n}</a>`}).join("");
+  document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===mode));
+  const a=document.querySelector('#tabrow [aria-current]'); if(a) a.scrollIntoView({block:"nearest",inline:"center"});
+}
+function foot(id){
+  const L=list(),i=L.findIndex(t=>t[0]===id),p=L[i-1],n=L[i+1];
+  return `<div class="navfoot">${p?`<a class="btn ghost" href="#${p[0]}">上一步：${p[1]}</a>`:'<span></span>'}${n?`<a class="btn" href="#${n[0]}">下一步：${n[1]}</a>`:''}</div>`;
+}
+function head(id,kicker,title){
+  return `<h2>${title}</h2>`;
+}
+const T=()=>"";
+
+
+/* ---------- 答題回饋：特效＋音效 ---------- */
+const FX={on:store.get("snd",true),ctx:null,
+ reduce:()=>matchMedia("(prefers-reduced-motion: reduce)").matches,
+ tone(seq){if(!this.on)return;try{this.ctx=this.ctx||new (window.AudioContext||window.webkitAudioContext)();const c=this.ctx;if(c.state==="suspended")c.resume();let t=c.currentTime+.01;
+   seq.forEach(([f,d,type,v])=>{const o=c.createOscillator(),g=c.createGain();o.type=type||"sine";o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v||.22,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05);t+=d*.62})}catch(e){}},
+ layer(){let l=document.querySelector(".fxlayer");if(!l){l=document.createElement("div");l.className="fxlayer";document.body.appendChild(l)}return l},
+ at(el){const r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};return [r.left+r.width/2,r.top+r.height/2]},
+ stamp(el,txt,cls){const [x,y]=this.at(el),s=document.createElement("div");s.className="stamp "+cls;s.textContent=txt;s.style.left=x+"px";s.style.top=y+"px";this.layer().appendChild(s);setTimeout(()=>s.remove(),950)},
+ good(el){this.tone([[784,.16],[988,.16],[1319,.4]]);if(el){el.classList.remove("pulse");void el.offsetWidth;el.classList.add("pulse")}
+   this.stamp(el,"○","g");if(this.reduce())return;
+   const [x,y]=this.at(el),L=this.layer(),cols=["var(--coral)","var(--sky)","var(--mint)","var(--sun)"];
+   for(let i=0;i<34;i++){const p=document.createElement("i");p.className="cf";const a=Math.random()*Math.PI*2,d=90+Math.random()*170;
+     p.style.cssText=`left:${x}px;top:${y}px;background:${cols[i%4]};--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d+60}px;--r:${Math.random()*720-360}deg`;L.appendChild(p);setTimeout(()=>p.remove(),1150)}},
+ bad(el){this.tone([[262,.2,"triangle",.25],[196,.34,"triangle",.25]]);this.stamp(el,"×","b");if(el){el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake")}},
+ flip(){this.tone([[660,.1],[880,.18]])}
+};
+/* ---------- 1 開場 ---------- */
+
+/* 上課前／下課前 同一題投票（前後測） */
+const PPQ="說別人「很唐」「唐寶」，<br>只是開玩笑，沒關係？",PPO=["沒關係","不確定","會讓人受傷"];
+const ppSum=a=>a[0]+a[1]+a[2],ppPct=(a,j)=>ppSum(a)?Math.round(a[j]*100/ppSum(a)):0;
+function ppHTML(ph){const d=store.get("pp",{pre:[0,0,0],post:[0,0,0]}),v=d[ph];
+  const cmp=ph==="post"&&ppSum(d.pre)&&ppSum(d.post)?`<div class="ppcmp"><h4>上課前和下課前，想法有沒有不一樣？</h4>${PPO.map((t,j)=>`<div class="pprow"><span class="pl">${t}</span><div class="ppb"><div class="bar"><i class="pre" style="width:${ppPct(d.pre,j)}%"></i></div><b>上課前 ${ppPct(d.pre,j)}%</b><div class="bar"><i class="post" style="width:${ppPct(d.post,j)}%"></i></div><b>下課前 ${ppPct(d.post,j)}%</b></div></div>`).join("")}</div>`:"";
+  return `<div class="pp" data-ph="${ph}"><div class="votes">${PPO.map((t,j)=>`<button type="button" class="vote ppv" data-pp="${j}" aria-label="${t}，目前 ${v[j]} 票，點一下加一票"><span class="t">${t}</span><output>${v[j]}</output></button>`).join("")}</div>
+   <div class="row" style="justify-content:flex-end;margin-top:6px"><button class="linkbtn" data-ppr="1" type="button">重設票數</button></div>${cmp}</div>`}
+function mountPP(root){const el=root.querySelector(".pp");if(!el)return;const ph=el.dataset.ph;
+  const redo=()=>{el.outerHTML=ppHTML(ph);mountPP(root)};
+  el.querySelectorAll("[data-pp]").forEach(b=>b.onclick=e=>{e.stopPropagation();const d=store.get("pp",{pre:[0,0,0],post:[0,0,0]});d[ph][+b.dataset.pp]++;store.set("pp",d);FX.flip&&FX.flip();redo()});
+  el.querySelector("[data-ppr]").onclick=()=>{const d=store.get("pp",{pre:[0,0,0],post:[0,0,0]});d[ph]=[0,0,0];store.set("pp",d);redo()}}
+function renderStart(){
+  const Q=[
+   {k:"上課前投票",q:PPQ,poll:"pre",hint:"選一個舉手就好"},
+   {k:"問題一",q:"你在哪裡看過<br>「很唐」「唐」？",words:["遊戲語音","留言區","班級群組","短影音標題"]},
+   {k:"問題二",q:"它在那裡，<br>通常是什麼意思？",words:["笨","反應慢","白目","很怪"]},
+   {k:"問題三",q:"說的人，<br>知道它指的是什麼嗎？",hint:"想一想就好，不用回答"},
+   {k:"揭曉",q:"「唐」和「唐寶」<br>指的就是「唐氏症」",reveal:1,p:"很多人其實知道，只是覺得「大家都在說」。今天要談的是：一個詞被當成罵人的話時，被笑的是誰。"}];
+  let i=0,w=0;
+  const draw=()=>{
+    const c=Q[i],showW=c.words?w:0;
+    $("#main").innerHTML=`<section class="panel">
+     <div class="qslide ${c.reveal?"rev":""}">
+       <span class="qk">${c.k}</span>
+       <div class="qbig">${c.q}</div>
+       ${c.hint?`<p class="qhint">${c.hint}</p>`:""}
+       ${c.p?`<p class="qp">${c.p}</p>`:""}
+       ${c.words?`<div class="qwords">${c.words.map((x,j)=>`<span class="qw" ${j<showW?"":"hidden"}>${x}</span>`).join("")}</div>`:""}
+       ${c.poll?ppHTML(c.poll):""}
+     </div>
+     <div class="sortnav">
+       <button class="btn ghost" id="qp" type="button" ${i===0&&w===0?"disabled":""}>上一步</button>
+       <div class="qdots">${Q.map((_,j)=>`<i class="${j===i?"on":""}"></i>`).join("")}</div>
+       <button class="btn" id="qn" type="button">${c.words&&w<c.words.length?"顯示學生可能的回答":i===Q.length-1?"下一步：群組裡的一句話":"下一題"}</button>
+     </div></section>`;
+    $("#qn").onclick=next;$("#qp").onclick=prev;if(c.poll)mountPP($("#main"));
+  };
+  const next=()=>{const c=Q[i];if(c.words&&w<c.words.length){w++;draw();return}if(i<Q.length-1){i++;w=0;draw();if(Q[i].reveal)FX.good(document.querySelector(".qk"))}else location.hash="chat"};
+  const prev=()=>{const c=Q[i];if(c.words&&w>0){w--;draw();return}if(i>0){i--;w=Q[i].words?Q[i].words.length:0;draw()}};
+  const onKey=e=>{if(current()!=="start")return;if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();next()}else if(e.key==="ArrowLeft")prev()};
+  window.removeEventListener("keydown",window._startKey||(()=>{}));window._startKey=onKey;window.addEventListener("keydown",onKey);
+  draw();
+}
+
+/* ---------- 2 情境短劇（向量動畫） ---------- */
+const CAST={
+  zhe:{name:"阿哲",shirt:"var(--blue)",h:1},
+  yu:{name:"小宇",shirt:"var(--good)",h:1},
+  qing:{name:"小晴",shirt:"var(--sun)",h:1,hair:1},
+  an:{name:"弟弟小安",shirt:"var(--warn)",h:.78},
+  m1:{name:"同學",shirt:"var(--muted)",h:.96},
+  m2:{name:"同學",shirt:"var(--muted)",h:.96}
+};
+const MOUTH={happy:"M-10 -62 Q0 -51 10 -62",laugh:"M-12 -63 Q0 -46 12 -63",sad:"M-10 -55 Q0 -64 10 -55",flat:"M-9 -59 L9 -59",oh:"M-4 -59 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0"};
+const SCENES=[
+ {bg:"class",cap:"下課時間，小宇在黑板上算錯了一題數學。",
+  c:{zhe:[150,"laugh"],yu:[300,"flat"],m1:[440,"happy"],m2:[520,"happy"],qing:[640,"flat"]},
+  b:{who:"zhe",t:"你很唐欸！這也不會？",k:"hurt"}},
+ {bg:"class",cap:"旁邊的同學跟著喊，大家笑得更大聲了。小宇低下頭，什麼也沒說。",
+  c:{zhe:[150,"laugh"],yu:[300,"sad",1],m1:[440,"laugh"],m2:[520,"laugh"],qing:[640,"flat"]},
+  b:{who:"m1",t:"唐寶！唐寶！",k:"hurt"}},
+ {bg:"class",cap:"只有小晴沒有笑。",spot:"qing",
+  c:{zhe:[150,"laugh"],yu:[300,"sad",1],m1:[440,"laugh"],m2:[520,"laugh"],qing:[640,"sad"]}},
+ {bg:"home",cap:"放學回家，小晴的弟弟小安跑過來。小安是唐氏症者，他每天都很努力練習綁鞋帶、念課本。",
+  c:{qing:[300,"happy"],an:[460,"laugh"]},
+  b:{who:"an",t:"姐姐！我今天自己綁好鞋帶了！",k:""}},
+ {bg:"home",cap:"小晴想起今天教室裡的笑聲：「原來大家說的『唐寶』，是在笑像弟弟這樣的人。」",
+  c:{qing:[300,"sad",1],an:[460,"happy"]}},
+ {bg:"class",cap:"隔天，小晴鼓起勇氣去找阿哲。",
+  c:{zhe:[300,"flat"],qing:[460,"flat"],yu:[640,"flat"]},
+  b:{who:"qing",t:"我弟弟是唐氏症者。聽到那些話，我很難過。",k:""}},
+ {bg:"class",cap:"阿哲愣住了。他從來沒想過，一句好玩的話，會讓身邊的人這麼難過。",
+  c:{zhe:[300,"oh"],qing:[460,"flat"],yu:[640,"flat"]},
+  b:{who:"zhe",t:"我只是覺得好玩……對不起。",k:""}},
+ {bg:"class",cap:"阿哲走向小宇。換一句話，大家都能笑得出來。",
+  c:{zhe:[440,"happy"],yu:[560,"happy"],qing:[300,"happy"],m1:[680,"happy"]},
+  b:{who:"zhe",t:"昨天對不起，這題我們一起想吧！",k:"kind"}}
+];
+function person(id){
+  const p=CAST[id],s=p.h;
+  return `<g class="ch" id="ch-${id}" style="opacity:0;transform:translate(400px,330px)"><g transform="scale(${s})">
+   <g class="bobber">
+    <rect x="-24" y="-40" width="48" height="58" rx="16" fill="${p.shirt}"/>
+    <rect x="-18" y="16" width="14" height="30" rx="6" fill="var(--ink)" opacity=".75"/><rect x="4" y="16" width="14" height="30" rx="6" fill="var(--ink)" opacity=".75"/>
+    ${p.hair?'<path d="M-30 -68 q0 -34 30 -34 q30 0 30 34 l0 26 l-8 0 l0 -24 l-44 0 l0 24 l-8 0z" fill="var(--ink)" opacity=".85"/>':''}
+    <circle class="hd" cx="0" cy="-70" r="28"/>
+    ${p.hair?'':'<path d="M-27 -78 q4 -22 27 -22 q24 0 27 22 q-14 -8 -27 -6 q-14 -2 -27 6z" fill="var(--ink)" opacity=".85"/>'}
+    <circle class="eye" cx="-10" cy="-72" r="3.2"/><circle class="eye" cx="10" cy="-72" r="3.2"/>
+    <path class="mo" d="${MOUTH.flat}"/>
+    <path class="tr" d="M14 -66 q-5 9 0 12 q5 -3 0 -12z"/>
+   </g></g>
+   <text class="nm" x="0" y="66" text-anchor="middle">${p.name}</text></g>`;
+}
+function bgSVG(){
+  return `<g id="bg-class">
+     <rect width="800" height="420" fill="var(--wall)"/>
+     <rect x="160" y="30" width="480" height="150" rx="6" fill="var(--board)"/>
+     <text x="200" y="100" fill="#f4f7f2" font-family="var(--display)" font-size="34">36 ÷ 4 = 8 ?</text>
+     <path d="M440 86 l18 18 m0 -18 l-18 18" stroke="var(--sun)" stroke-width="4"/>
+     <rect y="340" width="800" height="80" fill="var(--floor)"/>
+   </g>
+   <g id="bg-home">
+     <rect width="800" height="420" fill="var(--sun-soft)"/>
+     <rect x="560" y="50" width="160" height="130" rx="8" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="6"/>
+     <path d="M640 50 v130 M560 115 h160" stroke="var(--line)" stroke-width="5"/>
+     <rect x="60" y="250" width="200" height="70" rx="20" fill="var(--blue)" opacity=".35"/>
+     <rect y="340" width="800" height="80" fill="var(--floor)"/>
+   </g>`;
+}
+function wrapText(t,n){const out=[];for(let i=0;i<t.length;i+=n)out.push(t.slice(i,i+n));return out}
+function renderDrama(){
+  let i=0,playing=false;
+  $("#main").innerHTML=`<section class="panel">
+   ${head("drama","特教宣導動畫","一句玩笑話")}
+   
+   <div class="stage">
+     <svg id="dsv" viewBox="0 0 800 420" role="img" aria-label="情境短劇動畫">
+       ${bgSVG()}
+       ${Object.keys(CAST).map(person).join("")}
+       <g id="bubs"></g>
+     </svg>
+     <div class="cap"><span class="sn" id="sn"></span><span id="captxt"></span></div>
+   </div>
+   <div class="row"><button class="btn" id="dplay" type="button">播放</button><button class="btn ghost" id="dprev" type="button">上一幕</button><button class="btn ghost" id="dnext" type="button">下一幕</button><div class="dots" id="dots"></div></div>
+   <div class="grid2">
+     <div class="card"><h3>看完想一想</h3><ol style="margin:8px 0 0;padding-left:1.3em"><li>聽到「你很唐」「唐寶」時，小宇心裡可能在想什麼？</li><li>小晴為什麼笑不出來？</li><li>如果你是旁邊的同學，你可以怎麼做？</li></ol></div>
+     <div class="card"><h3>你看見了嗎？</h3><p style="margin-top:8px">被笑的是小宇，但難過的還有小晴和她的弟弟。<b>一句話說出口，受傷的常常不只一個人。</b></p></div>
+   </div>
+   ${T("在第 2、3 幕暫停，請學生用一個詞說出小宇和小晴的心情。","在第 6 幕暫停，請學生先預測阿哲會怎麼回應，再看結局；討論「道歉之後還可以做什麼」。")}
+   ${foot("drama")}</section>`;
+  $("#dots").innerHTML=SCENES.map((_,k)=>`<button type="button" data-s="${k}" aria-label="第${k+1}幕">${k+1}</button>`).join("");
+  const show=k=>{
+    i=k;const S=SCENES[k];
+    $("#bg-class").style.display=S.bg==="class"?"":"none";
+    $("#bg-home").style.display=S.bg==="home"?"":"none";
+    Object.keys(CAST).forEach(id=>{
+      const g=$("#ch-"+id),c=S.c[id];
+      if(!c){g.style.opacity=0;return}
+      g.style.opacity=1;g.style.transform=`translate(${c[0]}px,330px)`;
+      g.querySelector(".mo").setAttribute("d",MOUTH[c[1]]);
+      g.classList.toggle("cry",!!c[2]);
+      g.classList.toggle("spot",S.spot===id);
+      g.querySelector(".bobber").classList.toggle("bob",c[1]==="laugh");
+    });
+    let bh="";
+    if(S.b){
+      const sx=S.c[S.b.who][0],lines=wrapText(S.b.t,13),w=Math.max(...lines.map(l=>l.length))*20+36,h=lines.length*26+22;
+      const x=Math.max(10,Math.min(790-w,sx-w/2)),y=200-h-(CAST[S.b.who].h<1?-20:0);
+      bh=`<g class="bub ${S.b.k}" key="${k}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="18"/><path d="M${sx-8} ${y+h-1} l8 16 l8 -16z" fill="var(--paper)"/>${lines.map((l,j)=>`<text x="${x+18}" y="${y+32+j*26}">${esc(l)}</text>`).join("")}</g>`;
+    }
+    $("#bubs").innerHTML=bh;
+    $("#sn").textContent=`第 ${k+1} 幕`;$("#captxt").textContent=S.cap;
+    document.querySelectorAll("#dots button").forEach(b=>b.setAttribute("aria-current",+b.dataset.s===k));
+    $("#dprev").disabled=k===0;$("#dnext").disabled=k===SCENES.length-1;
+  };
+  const stop=()=>{playing=false;clearTimers();$("#dplay").textContent="播放"};
+  $("#dplay").onclick=()=>{
+    if(playing){stop();return}
+    playing=true;$("#dplay").textContent="暫停";
+    if(i===SCENES.length-1) show(0);
+    timers.push(setInterval(()=>{if(i<SCENES.length-1)show(i+1);else stop()},5200));
+  };
+  $("#dprev").onclick=()=>{stop();show(i-1)};
+  $("#dnext").onclick=()=>{stop();show(i+1)};
+  document.querySelectorAll("#dots button").forEach(b=>b.onclick=()=>{stop();show(+b.dataset.s)});
+  requestAnimationFrame(()=>show(0));
+}
+
+
+/* ---------- 動畫播放器：台灣語音（瀏覽器內建微軟語音），沒有時改用預錄配音 ---------- */
+const AUDS=[];
+const RECORDED={drama:1,know:1,sum:1}; // 播放微軟台灣語音（曉臻、曉雨、雲哲）錄好的配音
+const TW={list:[],ready:false};
+function loadVoices(){try{const all=speechSynthesis.getVoices();TW.list=all.filter(v=>/zh[-_]TW/i.test(v.lang)||/Taiwan|臺灣|台灣|國語/.test(v.name));TW.ready=true}catch(e){}}
+try{loadVoices();speechSynthesis.onvoiceschanged=loadVoices}catch(e){}
+let VPICK=store.get("vpick","auto");
+function twVoice(prefer){const L=TW.list;if(!L.length)return null;
+  if(VPICK!=="auto"){const c=L.find(v=>v.name===VPICK);if(c)return c}
+  const score=v=>(/Natural|Online/i.test(v.name)&&/Microsoft/i.test(v.name)?10:0)+(/Google/i.test(v.name)?7:0)+(/Microsoft/i.test(v.name)?2:0)+(prefer.some(p=>v.name.includes(p))?3:0);
+  return L.slice().sort((x,y)=>score(y)-score(x))[0]}
+const ROLE={ // 偏好聲音、音高、語速
+  n:{p:["HsiaoChen","Hanhan","Yating"],pitch:1,rate:.95},
+  teacher:{p:["HsiaoYu","Yating","HsiaoChen"],pitch:.95,rate:.9},
+  zhe:{p:["YunJhe","Zhiwei"],pitch:1.35,rate:1.05},
+  yu:{p:["YunJhe","Zhiwei"],pitch:1.4,rate:.95},
+  m1:{p:["YunJhe","Zhiwei"],pitch:1.3,rate:1.1},
+  qing:{p:["HsiaoYu","HsiaoChen","Hanhan"],pitch:1.35,rate:1},
+  an:{p:["HsiaoYu","HsiaoChen","Hanhan"],pitch:1.55,rate:.9}};
+function filmBlock(id){return `<div class="film" id="film-${id}"><div class="fv"></div><div class="fbar"><button class="btn" type="button">播放</button><input type="range" min="0" max="1000" value="0" aria-label="播放進度"><span class="ftime"></span><select class="vsel" aria-label="配音聲音"></select><button class="btn ghost fs" type="button">全螢幕</button></div></div>`}
+function fillVoiceSel(sel){loadVoices();const L=TW.list;
+  if(!L.length){sel.hidden=true;return}sel.hidden=false;
+  const nm=v=>v.name.replace(/ - Chinese.*$/,"").replace(/\s*\(Natural\)/,"").replace(/^Microsoft /,"微軟 ").replace(/ Online/,"");
+  sel.innerHTML=`<option value="auto">聲音：自動</option>`+L.map(v=>`<option value="${esc(v.name)}" ${v.name===VPICK?"selected":""}>${esc(nm(v))}</option>`).join("");
+  sel.onchange=()=>{VPICK=sel.value;store.set("vpick",VPICK);document.querySelectorAll(".vsel").forEach(o=>o.value=VPICK)}}
+function mountFilm(id){
+  const K=window.FILMKIT;if(!K)return;const f=K.FILMS[id];
+  const root=$("#film-"+id),v=root.querySelector(".fv"),btn=root.querySelector("button"),seek=root.querySelector("input"),tm=root.querySelector(".ftime");
+  const fmt=x=>`${Math.floor(x/60)}:${String(Math.floor(x%60)).padStart(2,"0")}`;
+  const draw=t=>{v.innerHTML=K.frame(f,Math.min(t,f.total-.01));seek.value=Math.round(t/f.total*1000);tm.textContent=fmt(t)+" / "+fmt(f.total)};
+  const useTTS=()=>{if(RECORDED[id])return false;loadVoices();return TW.list.length>0&&"speechSynthesis" in window};
+  /* 預錄配音（沒有台灣語音時） */
+  let au=null;
+  /* 台灣語音 */
+  let T=0,playing=false,last=0,segs=[],cur=-1,speaking=false,raf=0;
+  const prep=()=>{const est=JSON.parse(JSON.stringify(window.FILM_TIMING));est[id]=est[id].map(r=>r.map(d=>d*.9));K.build(f,est);
+    segs=[];f.tl.forEach(s=>s.segs.forEach(g=>segs.push({a:s.start+g.start,b:s.start+g.end,who:g.who,text:g.text})))};
+  const speak=sg=>{try{speechSynthesis.cancel()}catch(e){}const r=ROLE[sg.who]||ROLE.n,u=new SpeechSynthesisUtterance(sg.text.replace(/……/g,"…"));
+    const vo=twVoice(r.p);if(vo){u.voice=vo;u.lang=vo.lang}else u.lang="zh-TW";u.pitch=r.pitch;u.rate=r.rate;speaking=true;
+    u.onend=u.onerror=()=>{if(u===speak.u)speaking=false};speak.u=u;speechSynthesis.speak(u)};
+  const tick=now=>{if(!playing)return;const dt=Math.min(.1,(now-last)/1000);last=now;
+    const k=segs.findIndex(sg=>T>=sg.a&&T<sg.b+.05);
+    if(k>=0&&k!==cur){cur=k;speak(segs[k])}
+    if(speaking&&cur>=0&&T>=segs[cur].b-.03)T=segs[cur].b-.03; else T+=dt;
+    if(T>=f.total){stopTTS();btn.textContent="重播";draw(f.total);return}
+    draw(T);raf=requestAnimationFrame(tick)};
+  const stopTTS=()=>{playing=false;cancelAnimationFrame(raf);try{speechSynthesis.cancel()}catch(e){}speaking=false;cur=-1};
+  const ctl={pause:()=>{if(au)au.pause();stopTTS()}};AUDS.push(ctl);
+  btn.onclick=()=>{
+    if(useTTS()){
+      if(playing){stopTTS();btn.textContent="播放";return}
+      if(!segs.length)prep();if(T>=f.total-.1)T=0;cur=-1;playing=true;btn.textContent="暫停";last=performance.now();raf=requestAnimationFrame(tick);
+    }else{
+      if(!au){K.build(f,window.FILM_TIMING);au=new Audio("nar_"+id+".mp3");
+        const loop=()=>{draw(au.currentTime);if(!au.paused)requestAnimationFrame(loop)};au.onplay=loop;au.onended=()=>{btn.textContent="重播";draw(f.total)}}
+      if(au.paused){if(au.currentTime>=f.total-.1)au.currentTime=0;au.play().catch(()=>{});btn.textContent="暫停"}else{au.pause();btn.textContent="播放"}
+    }};
+  seek.oninput=()=>{const t=seek.value/1000*f.total;if(au&&!useTTS()){au.currentTime=t;draw(t);return}
+    if(!segs.length)prep();const was=playing;stopTTS();T=t;draw(T);if(was){playing=true;last=performance.now();raf=requestAnimationFrame(tick)}};
+  root.querySelector(".fs").onclick=()=>{const el=root;try{(el.requestFullscreen||el.webkitRequestFullscreen).call(el)}catch(e){}};
+  const vs=root.querySelector(".vsel");fillVoiceSel(vs);if(RECORDED[id])vs.hidden=true;try{speechSynthesis.addEventListener("voiceschanged",()=>{fillVoiceSel(vs);if(RECORDED[id])vs.hidden=true})}catch(e){}
+  if(useTTS())prep();else K.build(f,window.FILM_TIMING);
+  draw(1.6);seek.value=0;T=0;
+}
+function renderDramaFilm(){
+  $("#main").innerHTML=`<section class="panel">
+   ${head("drama","","一句玩笑話")}
+   ${filmBlock("drama")}
+   <div class="grid2">
+     <div class="card"><h3>看完想一想</h3><ol style="margin:8px 0 0;padding-left:1.3em"><li>聽到「你很唐」「唐寶」時，小宇心裡可能在想什麼？</li><li>小晴為什麼笑不出來？</li><li>如果你是旁邊的同學，你可以怎麼做？</li></ol></div>
+     <div class="card"><h3>你看見了嗎？</h3><p style="margin-top:8px">被笑的是小宇，但難過的還有小晴和她的弟弟。<b>一句話說出口，受傷的常常不只一個人。</b></p></div>
+   </div>
+   ${foot("drama")}</section>`;
+  mountFilm("drama");
+}
+/* ---------- 群組裡的一句話 ---------- */
+const CHAT=[
+ {who:"阿哲",img:1,tm:"21:12"},
+ {who:"阿哲",t:"笑死 超唐",tm:"21:12"},
+ {who:"同學A",t:"哈哈哈哈哈 唐寶本人",tm:"21:13"},
+ {who:"同學B",sticker:1,tm:"21:13"},
+ {who:"小晴",t:"可以不要這樣嗎",tm:"21:15"},
+ {who:"阿哲",t:"開玩笑而已啦 幹嘛那麼認真",tm:"21:15"},
+ {who:"小晴",t:"我弟是唐氏症。每次看到有人這樣用這個字，我都很難受。",tm:"21:16"}];
+const AV={"阿哲":["#4a7bd0","哲"],"同學A":["#e08a3c","A"],"同學B":["#3fa37a","B"],"小晴":["#d65a7a","晴"]};
+/* 仿手機拍的照片：小宇上台報告忘詞（插畫，非真人） */
+const PHOTO=`<svg viewBox="0 0 480 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="照片：小宇在台上報告時忘詞，愣在投影幕前">
+<defs>
+ <linearGradient id="pw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9e2d2"/><stop offset="1" stop-color="#cfc5b1"/></linearGradient>
+ <linearGradient id="pf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a98a63"/><stop offset="1" stop-color="#7d6243"/></linearGradient>
+ <radialGradient id="ps" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e3ecf5"/></radialGradient>
+ <radialGradient id="pv" cx="50%" cy="50%" r="72%"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient>
+ <linearGradient id="psk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6d3b3"/><stop offset="1" stop-color="#dfae88"/></linearGradient>
+ <linearGradient id="psh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d9dee6"/></linearGradient>
+ <filter id="pb" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter>
+ <filter id="pb2"><feGaussianBlur stdDeviation="1.1"/></filter>
+ <filter id="pn"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .07 0"/></filter>
+</defs>
+<g transform="rotate(-1.6 240 180)">
+<rect x="-20" y="-20" width="520" height="400" fill="url(#pw)"/>
+<g filter="url(#pb2)">
+ <rect x="-20" y="250" width="520" height="140" fill="url(#pf)"/>
+ <rect x="-20" y="246" width="520" height="8" fill="#6d5539"/>
+ <rect x="120" y="34" width="250" height="160" rx="3" fill="#585f6b"/>
+ <rect x="126" y="40" width="238" height="148" fill="url(#ps)"/>
+ <rect x="146" y="58" width="130" height="14" rx="3" fill="#2f6fb5"/>
+ <rect x="146" y="88" width="190" height="7" rx="3" fill="#9fb3c8"/><rect x="146" y="104" width="160" height="7" rx="3" fill="#9fb3c8"/><rect x="146" y="120" width="176" height="7" rx="3" fill="#9fb3c8"/>
+ <rect x="282" y="138" width="62" height="40" rx="3" fill="#c7d8b0"/><path d="M288 172 l14 -18 10 12 8 -8 16 14z" fill="#7da35a"/>
+ <rect x="380" y="150" width="70" height="104" rx="4" fill="#8a6a45"/><rect x="376" y="146" width="78" height="10" rx="3" fill="#6f5436"/>
+ <rect x="30" y="60" width="60" height="80" rx="3" fill="#f3efe6" stroke="#bfb6a3"/><rect x="38" y="70" width="44" height="6" fill="#d4776b"/><rect x="38" y="84" width="40" height="4" fill="#bfb6a3"/><rect x="38" y="94" width="36" height="4" fill="#bfb6a3"/>
+ <ellipse cx="236" cy="300" rx="46" ry="8" fill="#000" opacity=".18"/>
+ <!-- 小宇 -->
+ <path d="M214 296 l-2 -62 h18 l2 62z M244 296 l2 -62 h-18 l2 62z" fill="#2c3a56"/>
+ <path d="M206 300 h28 v-8 h-26z M240 300 h28 l-2 -8 h-26z" fill="#1d1d22"/>
+ <path d="M200 180 q36 -14 72 0 l6 64 h-84z" fill="url(#psh)"/>
+ <path d="M226 172 l10 14 10 -14z" fill="#e8ecf2"/><path d="M233 178 l3 30 3 -30z" fill="#2c4a7a"/>
+ <path d="M202 186 q-12 24 -6 52" stroke="url(#psh)" stroke-width="16" fill="none" stroke-linecap="round"/>
+ <path d="M270 186 q14 18 6 40" stroke="url(#psh)" stroke-width="16" fill="none" stroke-linecap="round"/>
+ <circle cx="196" cy="240" r="7" fill="url(#psk)"/>
+ <g transform="rotate(-12 280 228)"><rect x="268" y="214" width="30" height="38" rx="2" fill="#fbfbf7" stroke="#c9c9c0"/><path d="M273 224 h20 M273 231 h18 M273 238 h20" stroke="#9aa" stroke-width="1.5"/></g>
+ <circle cx="278" cy="226" r="7" fill="url(#psk)"/>
+ <rect x="229" y="160" width="14" height="16" fill="#dcae8c"/>
+ <ellipse cx="236" cy="138" rx="28" ry="31" fill="url(#psk)"/>
+ <path d="M207 134 q2 -36 32 -34 q30 2 26 34 q-6 -16 -22 -18 q-18 -2 -36 18z" fill="#2a211c"/>
+ <ellipse cx="208" cy="142" rx="5" ry="8" fill="#e3b28f"/><ellipse cx="264" cy="142" rx="5" ry="8" fill="#e3b28f"/>
+ <ellipse cx="225" cy="140" rx="3.2" ry="4" fill="#2a211c"/><ellipse cx="247" cy="140" rx="3.2" ry="4" fill="#2a211c"/>
+ <path d="M219 131 q6 -3 11 0 M242 131 q6 -3 11 0" stroke="#2a211c" stroke-width="1.8" fill="none"/>
+ <ellipse cx="236" cy="157" rx="4" ry="3.2" fill="#9a4d42"/>
+ <path d="M262 122 q5 8 1 13 q-5 -4 -1 -13z" fill="#bfe3ff" stroke="#8cc4ee"/>
+</g>
+<g filter="url(#pb)" opacity=".95">
+ <ellipse cx="60" cy="372" rx="62" ry="58" fill="#2a2420"/><ellipse cx="60" cy="300" rx="40" ry="44" fill="#1f1a17"/>
+ <ellipse cx="420" cy="380" rx="70" ry="60" fill="#3a3f52"/><ellipse cx="425" cy="306" rx="42" ry="46" fill="#231d1a"/>
+ <ellipse cx="300" cy="400" rx="56" ry="40" fill="#4b4f60"/><ellipse cx="300" cy="345" rx="34" ry="36" fill="#2b2420"/>
+</g>
+<rect x="-20" y="-20" width="520" height="400" fill="url(#pv)"/>
+<rect x="-20" y="-20" width="520" height="400" filter="url(#pn)"/>
+</g>
+</svg>`;
+/* 原創貼圖：笑到翻過去 */
+const STICKER=`<svg viewBox="0 0 170 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="貼圖：笑到翻過去">
+<g stroke="#2b2b2b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M18 40 q-8 10 -4 22 M10 78 q-6 8 -2 18" fill="none" stroke="#f0a020"/>
+ <g transform="rotate(-38 92 92)">
+  <ellipse cx="92" cy="96" rx="52" ry="46" fill="#ffd64a"/>
+  <path d="M60 72 q8 -8 16 0 M104 72 q8 -8 16 0" fill="none"/>
+  <path d="M66 92 q26 34 52 0 z" fill="#c8402f"/><path d="M78 106 q14 10 28 0" fill="#ff8a8a" stroke="none"/>
+  <path d="M56 78 q-10 8 -8 22" fill="none" stroke="#5fb7f0"/><path d="M126 78 q10 8 8 22" fill="none" stroke="#5fb7f0"/>
+  <ellipse cx="58" cy="92" rx="7" ry="4" fill="#ff9e7a" stroke="none" opacity=".8"/><ellipse cx="126" cy="92" rx="7" ry="4" fill="#ff9e7a" stroke="none" opacity=".8"/>
+  <path d="M48 128 q-6 12 4 16 M136 128 q6 12 -4 16" fill="#ffd64a"/>
+ </g>
+ <path d="M140 136 l8 -8 M150 146 l12 -4" fill="none" stroke="#f0a020"/>
+</g>
+<g font-family="'Noto Sans TC',sans-serif" font-weight="900" font-size="30" text-anchor="middle">
+ <text x="128" y="36" fill="#fff" stroke="#2b2b2b" stroke-width="7" paint-order="stroke" transform="rotate(12 128 36)">笑死</text>
+</g>
+</svg>`;
+const CHOICE=[
+ ["已讀不回","群組會覺得大家都默認了，小晴會覺得自己是一個人。"],
+ ["回個貼圖帶過","氣氛好像緩和了，但照片和那句話還在，小宇和小晴的難過沒有被看見。"],
+ ["私訊阿哲，請他收回照片","不讓他當眾下不了台，也比較容易聽進去。照片被收回，就少一次被截圖轉傳的機會。"],
+ ["在群組說：「我也覺得不要這樣」","讓小晴知道不是只有她在意，也讓其他人知道這不是大家都覺得好笑。"]];
+function renderChat(){
+  let n=0,pick=-1,sideShown=false;
+  const draw=()=>{const done=n>=CHAT.length;
+    const old=document.querySelector(".chatwin"),r0=old?old.getBoundingClientRect():null;
+    const anim=done&&!sideShown;
+    $("#main").innerHTML=`<section class="panel">
+     ${head("chat","","群組裡的一句話")}
+     <div class="chatstage ${done?"done":""}">
+      <div class="chatcol">
+       <div class="chatwin"><div class="chathead"><span class="cbk" aria-hidden="true">‹</span>九年三班（沒有老師）<span>(23)</span><span class="cicons" aria-hidden="true">⌕ ☰</span></div>
+         <div class="chatbody" id="cb"><div class="csys">今天</div>${CHAT.slice(0,n).map(m=>{if(m.sys)return `<div class="csys">${m.sys}</div>`;const me=m.who==="小晴",av=AV[m.who];
+           const body=m.img?`<div class="cimg">${PHOTO}</div>`:m.sticker?`<div class="cstk">${STICKER}</div>`:`<div class="cbub">${esc(m.t)}</div>`;
+           return `<div class="cmsg ${me?"me":""}">${me?"":`<span class="cav" style="background:${av[0]}" aria-hidden="true">${av[1]}</span>`}<div class="cmain">${me?"":`<span class="cwho">${m.who}</span>`}<div class="crow">${body}<span class="ctm">${me?"已讀 21<br>":""}${m.tm}</span></div></div></div>`}).join("")}</div></div>
+       <div class="sortnav">
+         <button class="btn ghost" id="cp" type="button" ${n===0?"disabled":""}>上一則</button>
+         <span></span>
+         <button class="btn" id="cn" type="button" ${done?"disabled":""}>${n===0?"開始":"下一則"}</button>
+       </div>
+      </div>
+      ${done?`<div class="chatside ${anim?"slidein":""}">
+       <div class="card"><h3 style="margin-bottom:12px">如果你在這個群組，你會怎麼做？</h3>
+         <div class="opts">${CHOICE.map((c,k)=>`<button type="button" class="opt ${k===pick?"right":""}" data-c="${k}"><span class="l">${"ABCD"[k]}</span><span>${c[0]}</span></button>`).join("")}</div>
+         ${pick>=0?`<div class="explain" style="margin-top:12px"><b>可能會發生：</b>${CHOICE[pick][1]}</div>`:""}</div>
+       ${pick>=0?`<div class="grid2 ${anim?"":"slidein"}"><div class="card"><h3>想一想</h3><ol style="margin:8px 0 0;padding-left:1.3em"><li>按下「哈哈哈」的人，算不算參與？</li><li>那張照片如果被截圖轉傳，小宇會遇到什麼事？</li><li>阿哲說「開玩笑而已」，被笑的人有選擇要不要被開玩笑嗎？</li></ol></div>
+       <div class="card"><h3>旁觀者的力量</h3><p style="margin-top:8px">發訊息的是一個人，但讓它變成「大家都覺得好笑」的，是按讚、回貼圖和沉默的人。<b>一個人站出來，就能讓群組的風向不一樣。</b></p></div></div>`:""}
+      </div>`:""}
+     </div>
+     ${foot("chat")}</section>`;
+    if(done)sideShown=true;
+    const cb=$("#cb");if(cb)cb.scrollTop=cb.scrollHeight;
+    const cw=document.querySelector(".chatwin");
+    if(r0&&cw&&!matchMedia("(prefers-reduced-motion: reduce)").matches){const r1=cw.getBoundingClientRect(),dx=r0.left-r1.left;
+      if(Math.abs(dx)>4){const col=document.querySelector(".chatcol");col.animate([{transform:`translateX(${dx}px)`},{transform:"none"}],{duration:520,easing:"cubic-bezier(.2,.8,.2,1)"})}}
+    $("#cn").onclick=()=>{n++;draw();FX.tone([[700,.08]])};
+    $("#cp").onclick=()=>{n=Math.max(0,n-1);pick=-1;if(n<CHAT.length)sideShown=false;draw()};
+    document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{const first=pick<0;pick=+b.dataset.c;draw();if(first){const t=document.querySelector(".chatside .grid2");t&&t.scrollIntoView({behavior:"smooth",block:"nearest"})}});
+  };
+  const onKey=e=>{if(current()!=="chat")return;if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();if(n<CHAT.length){n++;draw()}}else if(e.key==="ArrowLeft"){n=Math.max(0,n-1);pick=-1;sideShown=false;draw()}};
+  window.removeEventListener("keydown",window._chatKey||(()=>{}));window._chatKey=onKey;window.addEventListener("keydown",onKey);
+  draw();
+}
+/* ---------- 真實案例 ---------- */
+const CASES=[["一位上班族在辦公室裡，好幾次笑同事的孩子是「智障兒子」。", "花蓮地方法院在 2024 年判他公然侮辱罪，三次加起來罰金 2 萬元。法官說：拿別人孩子的障礙來嘲笑，已經超過一般人能忍受的範圍。", "https://judgment.judicial.gov.tw/FILES/HLDM/113,易,298,20241104,1.pdf"], ["一個人在大馬路上，對別人大罵「白癡、智障」。", "臺北地方法院在 2025 年判他公然侮辱罪，罰金 5,000 元。", "https://judgment.judicial.gov.tw/FILES/TPDM/113%2c%e5%af%a9%e6%98%93%2c1619%2c20250402%2c1.pdf"], ["一個人在藝人的臉書、IG 留言區，連續留言罵人。", "新北地方法院在 2026 年判他公然侮辱罪，罰金 9,000 元。網路上打的字，一樣算數。", "https://www.ettoday.net/news/20260808/3215551.htm"], ["五個網友在別人的臉書貼文底下留言，罵一位立委是「垃圾」。他們說「我又沒指名道姓」。", "高雄地方法院在 2021 年判五個人公然侮辱罪，各罰金 5,000 到 6,000 元。法院認為從留言就看得出在罵誰。", "https://www.cna.com.tw/news/asoc/202110200289.aspx"], ["兩個同事吵架，一方一時生氣罵對方「神經病、智障」。", "臺南的法院在 2024 年判無罪。法院認為是吵架當下的情緒反應、時間很短，還不到要用刑法處罰的程度。但這不代表那句話沒有傷人。", "https://judgment.judicial.gov.tw/FILES/TNHM/113,上易,492,20241121,1.pdf"]];
+function renderCases(){
+  const open=new Set();
+  const draw=()=>{
+    $("#main").innerHTML=`<section class="panel">
+     ${head("cases","","說出口的話，要自己負責")}
+     <div class="cases">${CASES.map((c,k)=>`<div class="case">
+       <span class="cno">案例 ${k+1}</span>
+       <p class="cwhat">${c[0]}</p>
+       ${open.has(k)?`<div class="cres"><b>法院怎麼判：</b>${c[1]}<a href="${c[2]}" target="_blank" rel="noopener">看原始資料</a></div>`:`<button class="btn sun" type="button" data-k="${k}">法院怎麼判？</button>`}
+     </div>`).join("")}</div>
+     <div class="card"><h3>想一想</h3><p style="margin-top:8px">2024 年憲法法庭判決（113 年憲判字第 3 號）認為公然侮辱罪合憲，但只處罰「故意貶損他人名譽」、超過一般人可合理忍受範圍的言論，所以有的案子判有罪、有的判無罪。年滿 12 歲未滿 18 歲的人觸法，由少年法庭處理；在學校，反覆用言語或網路訊息貶低同學，也可能構成霸凌。</p></div>
+     ${foot("cases")}</section>`;
+    document.querySelectorAll(".case [data-k]").forEach(b=>b.onclick=()=>{open.add(+b.dataset.k);draw();FX.tone([[440,.12],[330,.2]])});
+  };
+  draw();
+}
+/* ---------- 3 認識唐氏症 ---------- */
+function chrSVG(){
+  const nums=[18,19,20,21,22];let g="";
+  nums.forEach((n,i)=>{
+    const x=40+i*110,is21=n===21,h=n<20?110:80,y=200-h;
+    if(!is21) g+=`<rect class="chr-other" x="${x}" y="${y}" width="16" height="${h}" rx="8"/><rect class="chr-other" x="${x+26}" y="${y}" width="16" height="${h}" rx="8"/>`;
+    else g+=`<rect class="glow" x="${x-14}" y="${y-14}" width="100" height="${h+28}" rx="16" fill="var(--sun)" opacity="0"/>
+      <rect class="chr" x="${x}" y="${y}" width="16" height="${h}" rx="8"/><rect class="chr" x="${x+26}" y="${y}" width="16" height="${h}" rx="8"/>
+      <g class="drop"><rect class="chr-extra" x="${x+52}" y="${y}" width="16" height="${h}" rx="8"/></g>
+      <g class="tag"><text class="lbl" x="${x+34}" y="${y-28}" text-anchor="middle" font-weight="700">多了一條！</text></g>`;
+    g+=`<text class="lbl" x="${x+21}" y="226" text-anchor="middle">${n}</text>`;
+  });
+  return `<svg viewBox="0 0 600 270" role="img" aria-label="第18到22對染色體，第21對多出第三條">
+    <text class="lbl-s" x="20" y="22">人體細胞有 23 對染色體（這裡只畫出第 18～22 對）</text>${g}
+    <text class="lbl-s" x="20" y="256">每一對原本有 2 條；唐氏症者的第 21 對有 3 條，所以也叫「21 三體症」。</text></svg>`;
+}
+const ICONS={
+ "上班工作":'<rect x="6" y="14" width="28" height="20" rx="3"/><path d="M14 14v-4h12v4"/>',
+ "自己搭車":'<rect x="7" y="6" width="26" height="24" rx="5"/><path d="M7 18h26M12 30v4M28 30v4"/><circle cx="13" cy="24" r="1.5"/><circle cx="27" cy="24" r="1.5"/>',
+ "使用手機":'<rect x="12" y="4" width="16" height="32" rx="3"/><path d="M18 31h4"/>',
+ "結婚成家":'<path d="M20 34s-13-8-13-17a7 7 0 0 1 13-3 7 7 0 0 1 13 3c0 9-13 17-13 17z"/>',
+ "投票":'<rect x="6" y="18" width="28" height="16" rx="2"/><path d="M14 18l4-12 10 4-4 8"/>',
+ "上大學":'<path d="M4 15l16-8 16 8-16 8z"/><path d="M10 18v8c4 4 16 4 20 0v-8"/>',
+ "表演運動":'<circle cx="20" cy="8" r="4"/><path d="M20 12v12l-6 10M20 24l6 10M10 18h20"/>',
+ "交朋友":'<circle cx="13" cy="13" r="5"/><circle cx="27" cy="13" r="5"/><path d="M4 34c0-7 4-11 9-11s9 4 9 11M18 34c0-7 4-11 9-11s9 4 9 11"/>'};
+function renderLearn(){
+  $("#main").innerHTML=`<section class="panel">
+   ${head("learn","","唐氏症是什麼？")}
+   <div class="duo">${filmBlock("know")}
+   <div class="duoside"><div class="card"><h3>聽聽他們自己怎麼說</h3><p style="margin:8px 0 14px">唐氏症基金會的「唐寶寶大聲說」，由唐氏症者親自分享自己的工作、夢想和生活。</p><a class="btn sun" href="https://www.youtube.com/playlist?list=PLzDGVn1Tpxeogu9E_VOs95X8mxY01aSL0" target="_blank" rel="noopener">打開「唐寶寶大聲說」</a></div></div></div>
+   ${foot("learn")}</section>`;
+  mountFilm("know");
+}
+
+/* ---------- 4 唐寶寶這個詞 ---------- */
+const JUDGE=[
+ {s:"新聞標題：「唐寶寶畢業了！努力 4 年完成大學學業」",a:0,f:"這是在介紹、肯定他們。基金會和新聞常用「唐寶寶」作為親切的稱呼。"},
+ {s:"同學答錯題目，有人大喊：「唐寶！唐寶！」",a:1,f:"這是拿來笑別人笨。就算對方不是唐氏症者，也把唐氏症者當成了笑點。"},
+ {s:"「你是唐寶喔？連這個都不會。」",a:1,f:"用「唐寶」來說別人不會、很笨，就是取笑。"},
+ {s:"節目「唐寶寶大聲說」，請唐氏症者分享自己的工作和生活。",a:0,f:"這是讓他們自己發聲，是尊重的用法。"},
+ {s:"看到長相比較特別的人，偷偷說：「好像唐寶喔。」",a:1,f:"拿別人的外表和唐氏症者做比較來取笑，兩邊都會受傷。"},
+ {s:"小晴跟同學介紹：「我弟弟小安是唐氏症者，他很會唱歌。」",a:0,f:"直接說「唐氏症者」，或叫他的名字，是最清楚也最尊重的說法。"}
+];
+function renderNickname(){
+  const st=store.get("judgeJH",{});
+  const draw=()=>{
+    $("#main").innerHTML=`<section class="panel">
+     ${head("nickname","","誰決定怎麼稱呼？")}
+     
+     <div class="duo nick"><div class="duocol">
+     <div class="two">
+       <div class="side warm"><span class="tag2">原本：親切的暱稱</span><h3>「唐寶寶」</h3>
+         <p>社會和唐氏症基金會常用「唐寶寶」稱呼唐氏症者，帶著疼愛和關心，例如「唐寶寶大聲說」節目。</p></div>
+       <div class="side cold"><span class="tag2">被拿來：取笑別人</span><h3>「唐寶」「很唐」</h3>
+         <p>當它被用來說別人「笨、慢、白目」，或拿來笑別人的長相，就變成了傷人的話。</p></div>
+     </div>
+     <div class="reveal"><h3>一個稱呼是不是尊重，由被稱呼的人說了算</h3>
+       <p>有些唐氏症者和家人喜歡「唐寶寶」，有些人希望被叫「唐氏症者」或直接叫名字。旁人覺得「沒惡意」，不代表對方能接受。最不會出錯的方式：叫他的名字。</p></div>
+     </div>
+     <div class="card"><div class="jhead"><h3>判斷看看：這是暱稱，還是取笑？</h3><button class="btn ghost" id="jr" type="button">重新判斷</button></div>
+       <div class="judge">${JUDGE.map((j,k)=>{const p=st[k];const done=p!==undefined;return `<div class="jline ${done?(p===j.a?"ok":"no"):""}">
+         <span class="s">${j.s}</span>
+         <span class="b"><button type="button" data-k="${k}" data-v="0">暱稱</button><button type="button" data-k="${k}" data-v="1">取笑</button></span>
+         ${done?`<span class="mk" aria-label="${p===j.a?"想得對":"再想想"}">${p===j.a?"✓":"？"}</span>`:""}</div>`}).join("")}</div>
+       ${st.last!==undefined&&st[st.last]!==undefined?`<div class="explain jfb"><b>${st[st.last]===JUDGE[st.last].a?"想得對。":"再想想。"}</b>${JUDGE[st.last].f}</div>`:""}
+</div>
+     </div>
+     ${T("用「同一個詞，用在哪裡」來討論，不必強調哪個詞絕對不能說。","可補充：當事人和家人怎麼稱呼自己，比旁人怎麼想更重要；也有人偏好被稱為「唐氏症者」或直接叫名字。")}
+     ${foot("nickname")}</section>`;
+    document.querySelectorAll(".jline button").forEach(b=>b.onclick=()=>{const k=+b.dataset.k,v=+b.dataset.v;st[k]=v;st.last=k;store.set("judgeJH",st);draw();const el=document.querySelector(`.jline button[data-k="${k}"][data-v="${v}"]`);v===JUDGE[k].a?FX.good(el):FX.bad(el)});
+    $("#jr").onclick=()=>{Object.keys(st).forEach(k=>delete st[k]);delete st.last;store.set("judgeJH",st);draw()};
+  };
+  draw();
+}
+
+/* ---------- 5 知識挑戰賽 ---------- */
+const CH=[
+ {q:"「很唐」「唐寶」指的是什麼？",o:["唐朝的人","唐氏症","糖果的糖","一個遊戲角色"],a:1,e:"「唐」指的就是「唐氏症」。用它罵人，就是把一群真實存在的人當成笑點。"},
+ {q:"有人說「大家都這樣講，只是開玩笑」。哪一個說法最合理？",o:["大家都說，就沒問題","對方沒聽到就沒差","一個詞變成罵人的話，被貶低的是一整群人","只要沒指名道姓就好"],a:2,e:"當「唐」等於「笨」，被貶低的不只眼前的人，還有所有唐氏症者。"},
+ {q:"群組裡有人貼出同學的出糗照片說「超唐」，哪個做法最能讓事情不再擴大？",o:["截圖分享給別班","回個貼圖","不轉傳，私訊請發照片的人收回","已讀不回"],a:2,e:"照片被收回，就少一次被截圖轉傳的機會；私訊提醒也不會讓對方當眾下不了台。"},
+ {q:"一再在群組或公開場合用貶抑的稱呼嘲笑同學，可能會怎樣？",o:["沒事，網路上講不算","可能被認定為言語或網路霸凌，學校會介入處理","刪掉訊息就沒事","只有老師聽到才算"],a:1,e:"反覆用言語或網路訊息貶低、嘲笑同學，可能構成霸凌。網路上說的話一樣算數。"},
+ {q:"誰最有資格決定一個族群想被怎麼稱呼？",o:["網友","當事人和他們的家人","說話最大聲的人","媒體"],a:1,e:"稱呼是否尊重，由被稱呼的人決定。"},
+ {q:"唐氏症者長大後，可以做到哪些事？",o:["上班工作","自己生活、使用手機和交通工具","參加社團、投票、為自己發聲","以上都有可能"],a:3,e:"很多唐氏症者在支持下工作、自立生活、參與社會，也會為自己的權益發聲。"},
+ {q:"「手殘」「智障」「腦殘」這些說法的共同點是什麼？",o:["都是正式用語","都把障礙當成罵人的話","都只是形容詞","都是遊戲術語"],a:1,e:"這些詞把障礙等同於「差」「爛」，即使沒有惡意，也在傳遞對障礙者的看不起。"},
+ {q:"朋友在遊戲語音裡一直說「唐」，哪一句提醒比較可能有效？",o:["「你很沒水準欸」","「欸，這個字是在笑唐氏症的人，換個說法吧」","當場大聲罵他","直接檢舉他的帳號"],a:1,e:"說清楚原因、不羞辱對方，對方比較容易聽進去。"}
+];
+
+function renderChallenge(){
+  const st=store.get("chJH2",{i:0,shown:false,pick:-1});if(st.i>=CH.length)st.i=0;
+  const draw=()=>{
+    const c=CH[st.i];
+    $("#main").innerHTML=`<section class="panel">
+     ${head("challenge","","情境測驗")}
+     
+     <div class="card qcard">
+       <div class="qhead"><span class="step">第 ${st.i+1} 題／共 ${CH.length} 題</span></div>
+       <div class="qtext">${c.q}</div>
+       <div class="opts">${c.o.map((o,k)=>`<button type="button" class="opt ${st.shown&&k===c.a?'right':''} ${st.shown&&k===st.pick&&k!==c.a?'wrong':''}" data-o="${k}" ${st.shown?"disabled":""}><span class="l">${"ABCD"[k]}</span><span>${o}</span></button>`).join("")}</div>
+       ${st.shown?`<div class="explain"><b>正解：${"ABCD"[c.a]}</b>　${c.e}</div>`:""}
+       <div class="row">
+         <button class="btn ghost" id="prev" type="button" ${st.i===0?"disabled":""}>上一題</button>
+         <button class="btn sun" id="show" type="button">${st.shown?"隱藏答案":"公布答案"}</button>
+         <button class="btn" id="next" type="button" ${st.i===CH.length-1?"disabled":""}>下一題</button>
+       </div>
+     </div>
+     ${foot("challenge")}</section>`;
+    $("#show").onclick=()=>{st.shown=!st.shown;st.pick=-1;save();if(st.shown)FX.good(document.querySelector(".opt.right"))};
+    document.querySelectorAll(".opt[data-o]").forEach(b=>b.onclick=()=>{const k=+b.dataset.o;st.shown=true;st.pick=k;save();const el=document.querySelector(`.opt[data-o="${k}"]`);k===c.a?FX.good(el):FX.bad(el)});
+    $("#prev").onclick=()=>{st.i--;st.shown=false;st.pick=-1;save()};
+    $("#next").onclick=()=>{st.i++;st.shown=false;st.pick=-1;save()};
+  };
+  const save=()=>{store.set("chJH",st);draw()};
+  draw();
+}
+
+/* ---------- 6 誰會受傷 ---------- */
+function renderRipple(){
+  const ppl=[{x:90,y:90,n:"唐氏症者本人"},{x:510,y:90,n:"他的家人"},{x:90,y:330,n:"被說的同學"},{x:510,y:330,n:"有類似狀況的人"}];
+  const faces=ppl.map((p,i)=>`<g id="p${i}">
+     <circle class="face" cx="${p.x}" cy="${p.y}" r="34"/>
+     <circle cx="${p.x-11}" cy="${p.y-6}" r="3.5" fill="var(--ink)"/><circle cx="${p.x+11}" cy="${p.y-6}" r="3.5" fill="var(--ink)"/>
+     <path class="mouth" d="M${p.x-13} ${p.y+10} Q${p.x} ${p.y+22} ${p.x+13} ${p.y+10}"/>
+     <path class="tear" d="M${p.x+14} ${p.y+2} q-5 9 0 12 q5 -3 0 -12z"/>
+     <text class="lbl" x="${p.x}" y="${p.y+58}" text-anchor="middle">${p.n}</text></g>`).join("");
+  $("#main").innerHTML=`<section class="panel">
+   ${head("ripple","想像當事人的感受","一句話說出口，會傳到誰那裡？")}
+   
+   <div class="svgbox"><svg id="rs" class="ripple-stage" viewBox="0 0 600 420" role="img" aria-label="一句話的漣漪影響四種人">
+     <circle class="ring" cx="300" cy="210" r="30"/><circle class="ring" cx="300" cy="210" r="30"/><circle class="ring" cx="300" cy="210" r="30"/>
+     ${faces}
+     <rect class="bubble" x="180" y="180" width="240" height="60" rx="30"/>
+     <text id="btxt" class="btxt" x="300" y="217" text-anchor="middle">（還沒說話）</text>
+   </svg></div>
+   <div class="row"><button class="btn" id="say1" type="button">說出口：「你很唐欸」</button><button class="btn" id="say2" type="button">說出口：「唐寶！」</button><button class="btn sun" id="kind" type="button">換一句話</button><button class="btn ghost" id="rst" type="button">重來</button></div>
+   <div class="card"><h3>不只是「唐」</h3><p style="margin-top:8px">「智障」「低能兒」「喜憨兒」「搞自閉」也一樣。很多被拿來開玩笑的詞，背後都是一群真實存在的人。<b>每個人的存在，都不應該被當成笑話。</b></p></div>
+   ${T("請學生說說：四個人各自會有什麼感受？","延伸：「除了『唐』，你還聽過哪些拿疾病、外表、膚色、性別或身分開玩笑的詞？」小組討論後分享。")}
+   ${foot("ripple")}</section>`;
+  const sad=v=>ppl.forEach((p,i)=>{const g=$("#p"+i);g.classList.toggle("sad",v);
+    g.querySelector(".mouth").setAttribute("d",v?`M${p.x-13} ${p.y+18} Q${p.x} ${p.y+6} ${p.x+13} ${p.y+18}`:`M${p.x-13} ${p.y+10} Q${p.x} ${p.y+22} ${p.x+13} ${p.y+10}`)});
+  const rs=$("#rs");
+  const say=t=>{clearTimers();rs.classList.remove("kind");rs.classList.add("go");$("#btxt").textContent=t;timers.push(setTimeout(()=>sad(true),700))};
+  $("#say1").onclick=()=>say("你很唐欸");
+  $("#say2").onclick=()=>say("唐寶！唐寶！");
+  $("#kind").onclick=()=>{clearTimers();rs.classList.add("go","kind");$("#btxt").textContent="慢慢來，我等你";sad(false)};
+  $("#rst").onclick=()=>{clearTimers();rs.classList.remove("go","kind");$("#btxt").textContent="（還沒說話）";sad(false)};
+}
+
+/* ---------- 7 玩笑還是傷害 ---------- */
+const SC=[
+ {s:"打遊戲時隊友失誤，有人在語音裡喊：「你很唐欸！」",who:"被罵的隊友；聽到的唐氏症者和家人。",alt:"「沒關係，下一波再來。」"},
+ {s:"短影音標題「全班最唐的一刻」，內容是同學出糗的片段。",who:"影片裡的同學，他沒有同意被拍、被笑；也包括唐氏症者。",alt:"不拍、不上傳；已經上傳的就刪掉。"},
+ {s:"把身心障礙者的照片做成迷因圖轉傳。",who:"照片裡的當事人和家人，他們不知道自己被拿來笑。",alt:"不轉傳，也可以檢舉這張圖。"},
+ {s:"群組裡叫反應比較慢的同學「唐寶」。",who:"被叫的同學；唐氏症者和家人。",alt:"叫他的名字。"},
+ {s:"留言區互罵「智障」「腦殘」。",who:"智能障礙者和家人，以及被罵的人。",alt:"對事不對人：「我不同意你的看法。」"},
+ {s:"拿同學的膚色、口音或性別開玩笑。",who:"被開玩笑的同學，以及和他背景相同的人。",alt:"好奇的話，就直接、有禮貌地問。"},
+ {s:"自己打電動失誤，說：「我剛剛手殘了。」",who:"「手殘」也是拿身體障礙開玩笑的說法，很多人沒發現。",alt:"「我剛剛失誤了。」"},
+ {s:"兩個好朋友互叫「笨蛋」，兩個人都覺得沒關係。",who:"他們兩個可能都不在意，但旁邊聽到的人不一定這樣想。",alt:"確認對方真的不在意，也注意場合。"}
+];
+function renderSort(){
+  const st=store.get("sortJH",{i:0,v:SC.map(()=>[0,0,0]),open:false});
+  const lab=[["ok","沒有冒犯"],["mid","有一點冒犯"],["hurt","有冒犯"]];
+  const draw=()=>{
+    const c=SC[st.i],v=st.v[st.i],tot=Math.max(1,v[0]+v[1]+v[2]);
+    $("#main").innerHTML=`<section class="panel">
+     ${head("sort","","紅綠燈：這些梗有冒犯嗎？")}
+     <div class="duo"><div class="card scen">
+       <div class="row" style="justify-content:space-between"><span class="step">情境 ${st.i+1}／${SC.length}</span><button class="linkbtn" id="rs" type="button">重設票數</button></div>
+       <div class="say">${c.s}</div>
+       <div class="votes">${lab.map(([k,t],j)=>`<button type="button" class="vote ${k}" data-j="${j}" aria-label="${t}，目前 ${v[j]} 票，點一下加一票"><div class="light" aria-hidden="true"><i></i><i></i><i></i></div><span class="t">${t}</span><output>${v[j]}</output><div class="vbar"><span style="width:${v[j]/tot*100}%"></span></div></button>`).join("")}</div>
+       ${st.open?`<div class="explain" style="display:grid;gap:6px"><p><b>可能讓誰不舒服：</b>${c.who}</p><p><b>可以換成：</b>${c.alt}</p></div>`:""}
+       <div class="sortnav">
+         <button class="btn ghost" id="pv" type="button" ${st.i===0?"disabled":""}>上一個</button>
+         <button class="btn sun" id="op" type="button">${st.open?"收起":"誰可能不舒服？"}</button>
+         <button class="btn" id="nx" type="button" ${st.i===SC.length-1?"disabled":""}>下一個</button>
+       </div>
+     </div>
+     <div class="duoside">
+       <div class="card"><h3>同一句話，不同的人，會有不同的感受</h3><p style="margin-top:8px">有人覺得好笑，有人因為有類似經歷而完全笑不出來。好的幽默，不需要建立在別人的<b>疾病、外表、身分或處境</b>上。</p></div>
+       <div class="card"><h3>不只是「唐」</h3><p style="margin-top:8px">「智障」「低能兒」「喜憨兒」「搞自閉」也一樣。這些詞背後，都是一群真實存在的人。<b>每個人的存在，都不應該被當成笑話。</b></p></div>
+     </div></div>
+     ${foot("sort")}</section>`;
+    document.querySelectorAll(".vote[data-j]").forEach(b=>b.onclick=()=>vote(+b.dataset.j));
+    $("#rs").onclick=()=>{st.v[st.i]=[0,0,0];save()};
+    $("#op").onclick=()=>{st.open=!st.open;save()};
+    $("#pv").onclick=()=>go(-1);
+    $("#nx").onclick=()=>go(1);
+  };
+  const vote=j=>{st.v[st.i][j]++;save();const el=document.querySelector(`.vote[data-j="${j}"]`);if(el){el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump")}FX.tone([[520+j*-90,.12]])};
+  const go=d=>{const n=st.i+d;if(n<0||n>=SC.length)return;st.i=n;st.open=false;save()};
+  const save=()=>{store.set("sortJH",st);draw()};
+  const onKey=e=>{if(current()!=="sort"||/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
+    if(e.key==="1"||e.key==="2"||e.key==="3")vote(+e.key-1);else if(e.key==="ArrowRight")go(1);else if(e.key==="ArrowLeft")go(-1);else if(e.key===" "){e.preventDefault();st.open=!st.open;save()}};
+  window.removeEventListener("keydown",window._sortKey||(()=>{}));window._sortKey=onKey;window.addEventListener("keydown",onKey);
+  draw();
+}
+
+/* ---------- 8 小測驗（固定 4 選項） ---------- */
+const QZ=[
+ {q:"大家拿來開玩笑的「很唐」「唐寶」，指的是什麼？",o:["唐朝的皇帝","唐氏症","糖果的「糖」","一個卡通角色"],a:1,e:"「唐」指的就是「唐氏症」。用它取笑別人，就是把一群真實存在的人當成笑點。"},
+ {q:"唐氏症是怎麼發生的？",o:["被別人傳染","吃太多糖","第 21 對染色體多了一條","不認真讀書"],a:2,e:"唐氏症是第 21 對染色體多了一條，不會傳染，也不是誰的錯。"},
+ {q:"世界唐氏症日是哪一天？",o:["3 月 21 日","4 月 4 日","10 月 10 日","12 月 25 日"],a:0,e:"3 月 21 日，代表「第 21 對染色體有 3 條」。"},
+ {q:"下列哪一個「唐寶寶」的用法是尊重的？",o:["「你是唐寶喔？」","「唐寶寶大聲說」節目，請唐氏症者分享生活","答錯題目時大喊「唐寶」","說別人長得「好像唐寶」"],a:1,e:"讓唐氏症者自己發聲、介紹他們的努力，是尊重的用法；拿來笑別人就是取笑。"},
+ {q:"有人用「唐寶」來笑別人，可能會讓誰受傷？",o:["唐氏症者本人","他們的家人和朋友","被笑的同學","以上都是"],a:3,e:"一句話的影響，常常比我們想的還要遠。"},
+ {q:"一句話說出口，大家都笑了，代表什麼？",o:["一定沒有人受傷","說的人很有幽默感","有些人可能笑不出來，只是沒有說","下次可以說得更大聲"],a:2,e:"同一句話，不同的人會有不同感受。"},
+ {q:"同學一直想不出答案，哪一句比較尊重？",o:["「你很唐欸」","「你是智障喔」","「慢慢來，我等你」","「唐寶，快一點啦」"],a:2,e:"給對方時間，比給對方標籤更有幫助。"},
+ {q:"聽到朋友說「你好唐」，你可以怎麼做？",o:["跟著一起笑","回罵他更難聽的話","假裝沒聽到，以後也跟著說","跟他說：這個詞會讓唐氏症的人和家人難過，換個說法吧"],a:3,e:"溫和地提醒，是保護別人，也是幫助朋友。"}
+];
+function renderQuiz(){
+  let i=0,score=0,picked=null;
+  const short=mode==="short";
+  const draw=()=>{
+    if(i>=QZ.length){
+      const msg=score===QZ.length?"全對！你已經準備好當一位溫暖的語言守護者。":score>=6?"很棒！再看看錯的題目，你會更清楚。":"沒關係，回到前面的單元再看一次，然後再挑戰。";
+      $("#main").innerHTML=`<section class="panel">${head("quiz","小測驗","測驗結果")}
+        <div class="card result"><div class="big">${score}／${QZ.length}</div><p>${msg}</p><button class="btn" id="again" type="button">再挑戰一次</button></div>${foot("quiz")}</section>`;
+      $("#again").onclick=()=>{i=0;score=0;picked=null;draw()};if(score>=6)setTimeout(()=>FX.good($(".result .big")),200);return;
+    }
+    const c=QZ[i];
+    $("#main").innerHTML=`<section class="panel">
+     ${head("quiz",short?"全體比手勢作答":"我學會了嗎？","小測驗")}
+     ${short?'':""}
+     <div class="qprog"><span style="width:${i/QZ.length*100}%"></span></div>
+     <div class="card qcard">
+       <div class="qhead"><span class="step">第 ${i+1} 題／共 ${QZ.length} 題</span>${short?"":`<span class="muted">目前得分 ${score}</span>`}</div>
+       <div class="qtext">${c.q}</div>
+       <div class="opts">${c.o.map((o,k)=>`<button type="button" class="opt ${picked!==null?(k===c.a?'right':k===picked?'wrong':''):''}" data-k="${k}" ${picked!==null?"disabled":""}><span class="l">${short?k+1:"ABCD"[k]}</span><span>${o}</span></button>`).join("")}</div>
+       ${picked!==null?`<div class="explain"><b>${picked===c.a?"答對了。":"再想想。"}</b>${c.e}</div><div class="row"><button class="btn" id="nq" type="button">${i===QZ.length-1?"看結果":"下一題"}</button></div>`:""}
+     </div>${foot("quiz")}</section>`;
+    document.querySelectorAll(".opt[data-k]").forEach(b=>b.onclick=()=>{picked=+b.dataset.k;const ok=picked===c.a;if(ok)score++;draw();const el=document.querySelector(`.opt[data-k="${picked}"]`);ok?FX.good(el):FX.bad(el)});
+    const nq=$("#nq"); if(nq) nq.onclick=()=>{i++;picked=null;draw()};
+  };
+  draw();
+}
+
+/* ---------- 講話前先想想（收尾約定） ---------- */
+const FLIPS=[
+ ["你很唐欸！","剛剛那波沒關係，再來。"],
+ ["笑死，唐寶本人","（不貼、不轉傳，直接叫他的名字）"],
+ ["我剛剛手殘了","我剛剛失誤了。"],
+ ["你智障喔？","我不同意你的看法，因為……"]];
+
+/* 班級語言宣言（證書） */
+function CERT(cls){
+  const N="#132a5c",G="#b8913a",R="#c23b32",P="#fffaf0";
+  const d=new Date(),date=`中華民國 ${d.getFullYear()-1911} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日`;
+  const name=(cls||"").trim()?esc(cls.trim()):"＿＿＿＿＿＿";
+  const V=[["一","不說",["不用「很唐」「唐寶」","「智障」「手殘」","形容別人或自己。"]],
+           ["二","不推",["不按讚、不回貼圖，","不轉傳拿別人","開玩笑的訊息和照片。"]],
+           ["三","私訊提醒",["說清楚原因，","不羞辱對方，","請他換個說法。"]],
+           ["四","站在旁邊",["看到同學被針對，","陪著他，或找信任","的大人一起處理。"]]];
+  const corner=(x,y,sx,sy)=>`<g transform="translate(${x} ${y}) scale(${sx} ${sy})" fill="none" stroke="${G}" stroke-width="2.4" stroke-linecap="round"><path d="M0 70 V14 Q0 0 14 0 H70"/><path d="M12 52 Q12 12 52 12"/><circle cx="26" cy="26" r="6" fill="${G}"/><path d="M78 0 h18 M0 78 v18"/></g>`;
+  const sprig=()=>{let g=`<path d="M${(380+110*Math.cos(2.36)).toFixed(1)} ${(150+110*Math.sin(2.36)).toFixed(1)} A110 110 0 0 1 ${(380+110*Math.cos(3.93)).toFixed(1)} ${(150+110*Math.sin(3.93)).toFixed(1)}" fill="none" stroke="${G}" stroke-width="2"/>`;
+    for(let k=0;k<6;k++){const a=(140+k*16)*Math.PI/180,x=380+110*Math.cos(a),y=150+110*Math.sin(a),deg=(140+k*16)+90;
+      for(const side of [-1,1]){g+=`<ellipse cx="${(x+side*9*Math.cos(a)).toFixed(1)}" cy="${(y+side*9*Math.sin(a)).toFixed(1)}" rx="10" ry="4.5" fill="${G}" transform="rotate(${deg+side*35} ${(x+side*9*Math.cos(a)).toFixed(1)} ${(y+side*9*Math.sin(a)).toFixed(1)})"/>`}}
+    return `<g>${g}</g><g transform="translate(1123 0) scale(-1 1)">${g}</g>`};
+  const box=(v,i)=>{const x=110+i*228,y=300;
+    return `<g><rect x="${x}" y="${y}" width="208" height="232" rx="18" fill="#ffffff" stroke="${N}" stroke-opacity=".18" stroke-width="2"/>
+     <circle cx="${x+104}" cy="${y}" r="24" fill="${N}"/><text x="${x+104}" y="${y+9}" text-anchor="middle" font-size="24" font-weight="900" fill="${P}" font-family="'Noto Serif TC',serif">${v[0]}</text>
+     <text x="${x+104}" y="${y+78}" text-anchor="middle" font-size="${v[1].length>2?34:42}" font-weight="900" fill="${N}" font-family="'Noto Serif TC',serif">${v[1]}</text>
+     <line x1="${x+64}" x2="${x+144}" y1="${y+98}" y2="${y+98}" stroke="${G}" stroke-width="2"/>
+     ${v[2].map((t,k)=>`<text x="${x+104}" y="${y+136+k*30}" text-anchor="middle" font-size="17.5" fill="#33405e" font-family="'Noto Sans TC',sans-serif">${t}</text>`).join("")}</g>`};
+  return `<svg class="cert" viewBox="0 0 1123 794" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${name} 班級語言宣言">
+   <defs><radialGradient id="cg" cx="50%" cy="40%" r="75%"><stop offset="0" stop-color="#fffdf7"/><stop offset="1" stop-color="#f6ecd6"/></radialGradient></defs>
+   <rect width="1123" height="794" fill="url(#cg)"/>
+   <rect x="22" y="22" width="1079" height="750" rx="10" fill="none" stroke="${N}" stroke-width="7"/>
+   <rect x="38" y="38" width="1047" height="718" rx="6" fill="none" stroke="${G}" stroke-width="2"/>
+   ${corner(52,52,1,1)}${corner(1071,52,-1,1)}${corner(52,742,1,-1)}${corner(1071,742,-1,-1)}
+   <text x="561.5" y="104" text-anchor="middle" font-size="19" letter-spacing="6" fill="${G}" font-weight="700" font-family="'Noto Sans TC',sans-serif">特教宣導・一個詞的重量</text>
+   ${sprig()}
+   <text x="561.5" y="186" text-anchor="middle" font-size="68" font-weight="900" fill="${N}" letter-spacing="8" font-family="'Noto Serif TC',serif">班級語言宣言</text>
+   <path d="M401 214 H530 M593 214 H722" stroke="${G}" stroke-width="2"/><path d="M561.5 204 l10 10 -10 10 -10 -10z" fill="${G}"/>
+   <text x="561.5" y="262" text-anchor="middle" font-size="25" fill="${N}" font-family="'Noto Sans TC',sans-serif"><tspan font-weight="900" font-family="'Noto Serif TC',serif" font-size="30">${name}</tspan>　全體同學，在此共同宣告：</text>
+   ${V.map(box).join("")}
+   <text x="561.5" y="590" text-anchor="middle" font-size="32" font-weight="900" fill="${N}" font-family="'Noto Serif TC',serif">好笑，不需要拿別人當代價。</text>
+   <text x="561.5" y="626" text-anchor="middle" font-size="19" fill="#4b5672" font-family="'Noto Sans TC',sans-serif">一個詞，有它的重量；說出口、打出去的話，都要自己負責。</text>
+   <text x="110" y="700" font-size="18" fill="${N}" font-weight="700" font-family="'Noto Sans TC',sans-serif">全班簽名</text>
+   <line x1="196" x2="700" y1="704" y2="704" stroke="${N}" stroke-opacity=".5" stroke-width="1.5"/>
+   <line x1="110" x2="700" y1="738" y2="738" stroke="${N}" stroke-opacity=".5" stroke-width="1.5"/>
+   <text x="760" y="722" font-size="18" fill="${N}" font-family="'Noto Sans TC',sans-serif">${date}</text>
+   <g class="seal" transform="translate(962 626) rotate(-10)"><g class="sealin">
+     <circle r="54" fill="none" stroke="${R}" stroke-width="5"/><circle r="45" fill="none" stroke="${R}" stroke-width="1.6"/>
+     <text y="-6" text-anchor="middle" font-size="27" font-weight="900" fill="${R}" font-family="'Noto Serif TC',serif">說話</text>
+     <text y="26" text-anchor="middle" font-size="27" font-weight="900" fill="${R}" font-family="'Noto Serif TC',serif">負責</text></g></g>
+  </svg>`;
+}
+function renderPromise(){
+  $("#main").innerHTML=`<section class="panel">
+   <div class="ptitle">${head("promise","","班級公約")}<div class="psegs" role="tablist"><button type="button" role="tab" data-pt="0">① 換句話說</button><button type="button" role="tab" data-pt="1">② 下課前投票</button><button type="button" role="tab" data-pt="2">③ 班級語言宣言</button></div></div>
+   <div class="ptab" data-p="0">
+   <div class="card" style="position:relative;overflow:hidden">
+     <p class="slogan">好笑，不需要拿別人當代價<small>一個詞，有它的重量。打字、按讚、轉傳之前先想想：這會讓誰不舒服？說出口、打出去的話，都要自己負責。</small></p>
+   </div>
+   <div class="card"><h3 style="margin-bottom:12px">換句話說：點一下卡片翻面</h3>
+     <div class="flips">${FLIPS.map((f,k)=>`<button type="button" class="flip" data-k="${k}" aria-pressed="false"><span class="lab">原本會說</span><span class="w">${f[0]}</span></button>`).join("")}</div></div>
+   </div>
+   <div class="ptab" data-p="1">
+   <div class="card"><h3 style="margin-bottom:6px">下課前，再投一次</h3><p class="ppq">${PPQ.replace("<br>","")}</p>${ppHTML("post")}</div>
+   </div>
+   <div class="ptab" data-p="2">
+   <div class="card certcard"><h3 class="sr">我們的班級語言宣言</h3>
+     <div class="certduo"><div class="certwrap" id="certwrap">${CERT(store.get("certCls",""))}</div>
+     <div class="certctl"><label for="cls" class="muted">班級</label><input id="cls" type="text" placeholder="例如：八年三班" value="${esc(store.get("certCls",""))}" >
+       <button class="btn sun" id="vowgo" type="button">我們宣告！</button>
+       <button class="btn ghost" id="certfs" type="button">全螢幕展示</button>
+       <button class="btn ghost" id="certpr" type="button">列印／存成 PDF</button></div></div>
+   </div>
+   </div>
+   ${T("請全班一起念出宣言，念完由老師按「我們宣告！」蓋章。","可列印成 A4 橫式張貼在教室，請全班在下方簽名。")}
+   ${foot("promise")}</section>`;
+  mountPP(document.querySelector(".card:has(.pp)")||$("#main"));
+  const ptab=k=>{store.set("ptab",k);document.querySelectorAll(".ptab").forEach(d=>d.hidden=+d.dataset.p!==k);document.querySelectorAll("[data-pt]").forEach(b=>b.setAttribute("aria-selected",+b.dataset.pt===k));AUDS.forEach(x=>x.pause())};
+  document.querySelectorAll("[data-pt]").forEach(b=>b.onclick=()=>ptab(+b.dataset.pt));ptab(store.get("ptab",0));
+  const cls=$("#cls"),wrap=$("#certwrap");
+  cls.oninput=()=>{store.set("certCls",cls.value);wrap.innerHTML=CERT(cls.value)};
+  $("#vowgo").onclick=()=>{const g=wrap.querySelector(".sealin");FX.good($("#vowgo"));
+    if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;const t0=performance.now();
+    const f=t=>{let k=Math.min(1,(t-t0)/550);const e=1-Math.pow(1-k,3);g.setAttribute("transform",`scale(${(2.6-1.6*e).toFixed(3)})`);g.setAttribute("opacity",Math.min(1,k*1.7).toFixed(2));if(k<1)requestAnimationFrame(f);else{g.removeAttribute("transform");g.removeAttribute("opacity")}};requestAnimationFrame(f)};
+  $("#certfs").onclick=()=>{document.fullscreenElement?document.exitFullscreen():wrap.requestFullscreen&&wrap.requestFullscreen()};
+  $("#certpr").onclick=()=>window.print();
+  document.querySelectorAll(".flip").forEach(b=>b.onclick=()=>{
+    const k=+b.dataset.k,on=b.getAttribute("aria-pressed")!=="true";
+    b.setAttribute("aria-pressed",on);b.classList.toggle("on",on);if(on)FX.good(b)
+    b.innerHTML=`<span class="lab">${on?"可以改成":"原本會說"}</span><span class="w">${FLIPS[k][on?1:0]}</span>`;
+  });
+}
+
+/* ---------- 9 學習單 ---------- */
+const WSF=["name","learn","hurt","nick","s1a","s1b","s2a","s2b","promise"];
+function renderSheet(){
+  const d=store.get("ws2",{});
+  const v=k=>esc(d[k]||"");
+  $("#main").innerHTML=`<section class="panel">
+   ${head("sheet","重新思考自己的語言","學習單：一個詞的重量")}
+   <div class="card ws">
+     <div><label for="name">班級／座號／姓名</label><input id="name" type="text" value="${v("name")}"></div>
+     <div><label for="learn">一、今天我認識的唐氏症，寫出三件事</label><textarea id="learn" placeholder="例如：唐氏症是第 21 對染色體多了一條……">${v("learn")}</textarea></div>
+     <div><label for="hurt">二、短劇中，聽到「唐寶」時，小宇和小晴各有什麼感受？</label><textarea id="hurt">${v("hurt")}</textarea></div>
+     <div><label for="nick">三、「唐寶寶」什麼時候是暱稱？什麼時候變成取笑？</label><textarea id="nick">${v("nick")}</textarea></div>
+     <div><label>四、換句話說：把傷人的話，改成尊重的說法</label>
+       <div style="display:grid;gap:10px">${[1,2].map(n=>`<div class="swap"><input id="s${n}a" type="text" aria-label="原本的話 ${n}" placeholder="${n===1?"你很唐欸":"唐寶，快一點啦"}" value="${v("s"+n+"a")}"><span>改成</span><input id="s${n}b" type="text" aria-label="改成 ${n}" placeholder="尊重的說法" value="${v("s"+n+"b")}"></div>`).join("")}</div></div>
+     <div><label for="promise">五、我的語言承諾：以後當我聽到或想說這類詞時，我會……</label><textarea id="promise">${v("promise")}</textarea></div>
+     <div class="row"><button class="btn" id="cp" type="button">複製學習單文字</button><button class="btn ghost" id="wclr" type="button">清空重寫</button><span class="muted" id="cpmsg"></span></div>
+   </div>
+   <div class="card"><h3 style="margin-bottom:12px">這堂課我們做了四件事</h3>
+     <div class="steps4"><div><b>認識唐氏症</b>知道它是什麼、不是什麼。</div><div><b>看見真實的人</b>詞語背後是一群真實存在的人。</div><div><b>想像感受</b>一句話會碰到本人、家人和朋友。</div><div><b>重新選擇語言</b>不是「不准說」，而是「我選擇不這樣說」。</div></div></div>
+   ${foot("sheet")}</section>`;
+  WSF.forEach(k=>{const el=$("#"+k);if(el) el.oninput=()=>{d[k]=el.value;store.set("ws2",d)}});
+  $("#wclr").onclick=()=>{WSF.forEach(k=>{d[k]="";const el=$("#"+k);if(el)el.value=""});store.set("ws2",d);$("#cpmsg").textContent="已清空"};
+  $("#cp").onclick=()=>{
+    const t=`【一個詞的重量 學習單】\n姓名：${d.name||""}\n一、我認識的唐氏症：${d.learn||""}\n二、小宇和小晴的感受：${d.hurt||""}\n三、暱稱還是取笑：${d.nick||""}\n四、換句話說：\n${[1,2].map(n=>`　${d["s"+n+"a"]||"＿＿"} → ${d["s"+n+"b"]||"＿＿"}`).join("\n")}\n五、我的語言承諾：${d.promise||""}`;
+    navigator.clipboard.writeText(t).then(()=>$("#cpmsg").textContent="已複製。").catch(()=>$("#cpmsg").textContent="無法自動複製，請手動選取文字。");
+  };
+}
+
+const R={start:renderStart,chat:renderChat,learn:renderLearn,nickname:renderNickname,sort:renderSort,cases:renderCases,challenge:renderChallenge,promise:renderPromise};
+const sndBtn=$("#snd");const sndUpd=()=>{sndBtn.setAttribute("aria-pressed",FX.on);sndBtn.textContent=FX.on?"音效：開":"音效：關"};
+sndBtn.onclick=()=>{FX.on=!FX.on;store.set("snd",FX.on);sndUpd();if(FX.on)FX.flip()};sndUpd();
+function route(){clearTimers();AUDS.forEach(a=>a.pause());AUDS.length=0;nav();R[current()]();window.scrollTo(0,0)}
+(()=>{const b=$("#newcls");let armed=0,t;
+  b.onclick=()=>{if(!armed){armed=1;b.textContent="再按一次：清空票數與班級";clearTimeout(t);t=setTimeout(()=>{armed=0;b.textContent="換下一班"},3500);return}
+    clearTimeout(t);armed=0;b.textContent="換下一班";
+    let keep={};try{["snd","vpick"].forEach(k=>{const v=localStorage.getItem(k);if(v!==null)keep[k]=v});localStorage.clear();Object.entries(keep).forEach(([k,v])=>localStorage.setItem(k,v))}catch(e){}
+    if(location.hash==="#start")route();else location.hash="start"}})();
+(()=>{const b=$("#bigtxt"),set=on=>{document.documentElement.classList.toggle("bigtxt",on);b.setAttribute("aria-pressed",on);b.textContent=on?"字還原":"字放大";store.set("bigtxt",on)};
+  set(store.get("bigtxt",false));b.onclick=()=>set(!document.documentElement.classList.contains("bigtxt"))})();
+window.addEventListener("hashchange",route);
+route();
+</script>
