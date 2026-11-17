@@ -590,6 +590,13 @@ a:not(.btn){text-underline-offset:3px}
 .film{position:relative}
 .fv-logo{position:absolute;right:1.5%;top:0;margin-top:1.5%;width:3.75%;opacity:.8;pointer-events:none;z-index:2}
 @media (max-width:600px){header.top{position:relative}.se365-logo{position:absolute;top:10px;right:12px;width:40px;height:40px}}
+/* 全螢幕滿版 */
+.film:fullscreen{display:block;position:relative;width:100vw!important;height:100vh;background:#000;border:0}
+.film:fullscreen .fv{position:absolute;inset:0;margin:auto;width:min(100vw,calc(100vh*16/9))!important;height:auto!important;max-height:100vh;aspect-ratio:16/9;background:#000}
+.film:fullscreen .fbar{position:absolute;left:0;right:0;bottom:0;z-index:5;background:rgba(18,22,34,.86);border-top:0;opacity:0;transition:opacity .3s}
+.film:fullscreen.ui .fbar,.film:fullscreen .fbar:hover,.film:fullscreen .fbar:focus-within{opacity:1}
+.film:fullscreen .ftime{color:#fff}
+.film:fullscreen{cursor:none}.film:fullscreen.ui{cursor:auto}
 </style>
 
 <header class="top"><div class="wrap brand">
@@ -881,7 +888,8 @@ function mountFilm(id){
     }};
   seek.oninput=()=>{const t=seek.value/1000*f.total;if(au&&!useTTS()){au.currentTime=t;draw(t);return}
     if(!segs.length)prep();const was=playing;stopTTS();T=t;draw(T);if(was){playing=true;last=performance.now();raf=requestAnimationFrame(tick)}};
-  root.querySelector(".fs").onclick=()=>{const el=root;try{(el.requestFullscreen||el.webkitRequestFullscreen).call(el)}catch(e){}};
+  root.querySelector(".fs").onclick=()=>{const el=root;try{if(document.fullscreenElement===el){document.exitFullscreen()}else{(el.requestFullscreen||el.webkitRequestFullscreen).call(el)}}catch(e){}};
+  {const wake=()=>{root.classList.add("ui");clearTimeout(root._ut);root._ut=setTimeout(()=>root.classList.remove("ui"),2500)};["mousemove","touchstart","keydown"].forEach(ev=>root.addEventListener(ev,wake,{passive:true}));document.addEventListener("fullscreenchange",()=>{if(document.fullscreenElement===root)wake();root.querySelector(".fs").textContent=document.fullscreenElement===root?"離開全螢幕":"全螢幕"})}
   const vs=root.querySelector(".vsel");fillVoiceSel(vs);if(RECORDED[id])vs.hidden=true;try{speechSynthesis.addEventListener("voiceschanged",()=>{fillVoiceSel(vs);if(RECORDED[id])vs.hidden=true})}catch(e){}
   if(useTTS())prep();else K.build(f,window.FILM_TIMING);
   draw(1.6);seek.value=0;T=0;
