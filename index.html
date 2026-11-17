@@ -132,6 +132,7 @@ dialog .x{background:#fff;color:var(--ink);border:0;border-radius:10px;font:inhe
     <a class="btn pri" href="es/" target="_blank" rel="noopener">開始上課：國小中高年級版 <small>40 分鐘</small></a>
     <a class="btn" href="jh/" target="_blank" rel="noopener">國中版 <small>45 分鐘</small></a>
    </div>
+   <p style="margin:18px 0 0"><button class="act" type="button" id="introBtn" style="background:transparent;border:0;padding:0;font-size:1.05rem;color:var(--ink);text-decoration:underline;text-underline-offset:4px">▶ 先看 1 分半的教材介紹影片</button></p>
   </div>
   <svg class="scale" viewBox="0 0 760 560" role="img" aria-label="天秤：「很唐」那一邊比「好好說」重">
    <ellipse cx="380" cy="532" rx="170" ry="18" fill="#1b2540" opacity=".08"/>
@@ -280,7 +281,7 @@ dialog .x{background:#fff;color:var(--ink);border:0;border-radius:10px;font:inhe
 <script>
 const V=[
  {n:1,t:"一句玩笑話",d:"3:22",f:"video/1-joke.mp4",img:"img/cover1.jpg",p:"阿哲笑小宇「很唐」，小晴的弟弟就是唐氏症者。最後老師說明為什麼不要這樣說。",s:"第 2 步"},
- {n:2,t:"認識唐氏症",d:"2:22",f:"video/2-down-syndrome.mp4",img:"img/cover2.jpg",p:"第 21 對染色體、不會傳染、早期療育、3/21 世界唐氏症日，以及「唐寶寶」這個詞。",s:"第 3 步"},
+ {n:2,t:"認識唐氏症",d:"2:36",f:"video/2-down-syndrome.mp4",img:"img/cover2.jpg",p:"「唐」的由來、第 21 對染色體、不會傳染、早期療育、3/21 世界唐氏症日，以及「唐寶寶」這個詞。",s:"第 3 步"},
  {n:3,t:"講話前先想想",d:"2:14",f:"video/3-think-first.mp4",img:"img/cover3.jpg",p:"不只是唐、紅綠燈、換句話說，以及「一個詞的重量」：說出口的話要自己負責。",s:"第 7 步"}];
 const dl='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>';
 document.getElementById("vids").innerHTML=V.map(v=>`<article class="card">
@@ -290,6 +291,7 @@ document.getElementById("vids").innerHTML=V.map(v=>`<article class="card">
 const dlg=document.getElementById("dlg"),vid=document.getElementById("dlgV");
 document.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{const v=V[+b.dataset.v-1];document.getElementById("dlgT").textContent=`動畫 ${v.n}　${v.t}`;vid.poster=v.img;vid.src=v.f;dlg.showModal();vid.play().catch(()=>{})});
 const close=()=>{vid.pause();dlg.close()};
+document.getElementById("introBtn").onclick=()=>{document.getElementById("dlgT").textContent="教材介紹";vid.poster="img/kit.jpg";vid.src="video/0-intro.mp4";dlg.showModal();vid.play().catch(()=>{})};
 document.getElementById("dlgX").onclick=close;
 dlg.addEventListener("close",()=>vid.pause());
 dlg.addEventListener("click",e=>{if(e.target===dlg)close()});

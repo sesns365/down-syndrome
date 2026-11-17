@@ -168,9 +168,12 @@ const ICON={
  grad:'<path d="M-40 -10l40 -20 40 20 -40 20z"/><path d="M-24 0v20c10 10 38 10 48 0v-20"/>'};
 const icon=(k,label,x,y,s,t,a)=>g(`<circle r="62" fill="${C.sunSoft}"/><g fill="none" stroke="${C.ink}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">${ICON[k]}</g>${txt(0,100,label,{size:32})}`,{x,y,s:s*pop(t,a)});
 const know={id:"know",title:"認識唐氏症",shots:[
- {segs:[["n","我們常聽到有人說：你很唐、唐寶。"],["n","這些詞，指的就是唐氏症。今天，我們一起來認識唐氏症。"]],
+ {segs:[["n","我們常聽到有人說：你很唐、唐寶。"],["n","這些詞，指的就是唐氏症。今天，我們一起來認識唐氏症。"],["n","唐氏症的「唐」，來自英國醫生約翰・朗頓・唐的名字。"],["n","他在 1866 年，第一次詳細描述這個症狀。"],["n","「唐」只是名字，和「笨」沒有關係。"]],
   draw:(t,S)=>plain(t)+g(txt(0,0,"「很唐」",{size:80,w:900,fill:C.coral})+txt(0,110,"「唐寶」",{size:80,w:900,fill:C.coral}),{x:640,y:280,s:pop(t,.3),op:S.seg>=1?1-p(t,S.at(1),.4):1})+
-   (S.seg>=1?g(txt(0,0,"認識唐氏症",{size:96,w:900}),{x:640,y:380,s:pop(t,S.at(1)+.3)}):"")},
+   (S.seg===1?g(txt(0,0,"認識唐氏症",{size:96,w:900}),{x:640,y:380,s:pop(t,S.at(1)+.3)}):"")+
+   (S.seg>=2?g(txt(0,0,"「唐」來自醫生的名字",{size:60,w:900}),{x:640,y:150,s:pop(t,S.at(2))})+
+     g(`<rect x="-330" y="-110" width="660" height="230" rx="30" fill="${C.paper}" stroke="${C.blue}" stroke-width="6"/>`+txt(0,-30,"約翰・朗頓・唐",{size:64,w:900})+txt(0,40,"John Langdon Down",{size:40,fill:C.muted})+txt(0,90,"英國醫生",{size:34,fill:C.blue}),{x:640,y:360,s:pop(t,S.at(2)+.3)})+
+     (S.seg===3?g(`<rect x="-260" y="-46" width="520" height="84" rx="42" fill="${C.sun}"/>`+txt(0,12,"1866 年 描述這個症狀",{size:40,w:900}),{x:640,y:580,s:pop(t,S.at(3)+.2)}):"")+(S.seg>=4?g(`<rect x="-360" y="-46" width="720" height="84" rx="42" fill="${C.paper}" stroke="${C.good}" stroke-width="5"/>`+txt(0,12,"「唐」只是名字，和「笨」沒有關係",{size:40,w:900,fill:C.good}),{x:640,y:580,s:pop(t,S.at(4)+.1)}):""):"")},
  {segs:[["n","我們的身體裡，有好多好多細胞。每個細胞裡，有二十三對染色體。"],["n","每一對，原本都有兩條。"],["n","唐氏症者的第二十一對染色體，多了一條，變成三條。"],["n","所以，唐氏症也叫做二十一三體症。"]],
   draw:(t,S)=>plain(t)+txt(640,110,S.seg<2?"每一對染色體，原本有 2 條":"第 21 對，有 3 條",{size:48,w:900})+chromo(t,S,S.seg>=2?S.at(2):null)+(S.seg>=3?g(`<rect x="-230" y="-50" width="460" height="80" rx="40" fill="${C.sun}"/>`+txt(0,8,"21 三體症",{size:46,w:900}),{x:640,y:600,s:pop(t,S.at(3))}):"")},
  {segs:[["n","這是寶寶還在媽媽肚子裡，就發生的。"],["n","不是誰做錯了事，也不會傳染。"]],
@@ -270,7 +273,7 @@ function frame(film,T){
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${svg}</svg>`;
 }
 /* 容易念錯的字：配音用同音字代念，字幕仍顯示原字 */
-const PRON=[["做錯了事","做錯勒事"],["人和他們","人漢他們"],["復健和學習","復健漢學習"],["他們和我們","他們漢我們"],["起鬨","起哄"],["長得","掌得"],["差很多","岔很多"],["為自己","位自己"],["當成","蕩成"],["……","，"],["：","，"]];
+const PRON=[["1866 年","一八六六年"],["約翰・朗頓・唐","約翰，朗頓，唐"],["做錯了事","做錯勒事"],["人和他們","人漢他們"],["復健和學習","復健漢學習"],["他們和我們","他們漢我們"],["起鬨","起哄"],["長得","掌得"],["差很多","岔很多"],["為自己","位自己"],["當成","蕩成"],["……","，"],["：","，"]];
 function say(s){let o=s;for(const [a,b] of PRON)o=o.split(a).join(b);return o}
 const api={FILMS,build,frame,W,H,PRON,say};
 if(typeof module!=="undefined")module.exports=api;else window.FILMKIT=api;
