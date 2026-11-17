@@ -168,7 +168,7 @@ const ICON={
  grad:'<path d="M-40 -10l40 -20 40 20 -40 20z"/><path d="M-24 0v20c10 10 38 10 48 0v-20"/>'};
 const icon=(k,label,x,y,s,t,a)=>g(`<circle r="62" fill="${C.sunSoft}"/><g fill="none" stroke="${C.ink}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">${ICON[k]}</g>${txt(0,100,label,{size:32})}`,{x,y,s:s*pop(t,a)});
 const know={id:"know",title:"認識唐氏症",shots:[
- {segs:[["n","我們常聽到有人說：你很唐、唐寶。"],["n","這些詞，指的就是唐氏症。今天，我們一起來認識唐氏症。"],["n","唐氏症的「唐」，來自英國醫生約翰・朗頓・唐的名字。"],["n","他在 1866 年，第一次詳細描述這個症狀。"],["n","「唐」只是名字，和「笨」沒有關係。"]],
+ {segs:[["n","我們常聽到有人說：你很唐、唐寶。"],["n","這些詞，指的就是唐氏症。今天，我們一起來認識唐氏症。"],["n","唐氏症的「唐」，來自英國醫生約翰・朗頓・唐的名字。"],["n","他在 1866 年，第一次詳細描述這個症狀，因此以他的姓氏來命名。"],["n","「唐」只是名字，和「笨」沒有關係。"]],
   draw:(t,S)=>plain(t)+g(txt(0,0,"「很唐」",{size:80,w:900,fill:C.coral})+txt(0,110,"「唐寶」",{size:80,w:900,fill:C.coral}),{x:640,y:280,s:pop(t,.3),op:S.seg>=1?1-p(t,S.at(1),.4):1})+
    (S.seg===1?g(txt(0,0,"認識唐氏症",{size:96,w:900}),{x:640,y:380,s:pop(t,S.at(1)+.3)}):"")+
    (S.seg>=2?g(txt(0,0,"「唐」來自醫生的名字",{size:60,w:900}),{x:640,y:150,s:pop(t,S.at(2))})+
@@ -273,7 +273,7 @@ function frame(film,T){
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${svg}</svg>`;
 }
 /* 容易念錯的字：配音用同音字代念，字幕仍顯示原字 */
-const PRON=[["1866 年","一八六六年"],["約翰・朗頓・唐","約翰，朗頓，唐"],["做錯了事","做錯勒事"],["人和他們","人漢他們"],["復健和學習","復健漢學習"],["他們和我們","他們漢我們"],["起鬨","起哄"],["長得","掌得"],["差很多","岔很多"],["為自己","位自己"],["當成","蕩成"],["……","，"],["：","，"]];
+const PRON=[["1866 年","一八六六年"],["約翰・朗頓・唐","約翰，朗頓，唐"],["做錯了事","做錯勒事"],["人和他們","人漢他們"],["復健和學習","復健漢學習"],["他們和我們","他們漢我們"],["起鬨","起哄"],["長得","掌得"],["差很多","插很多"],["為自己","位自己"],["當成","蕩成"],["……","，"],["：","，"]];
 function say(s){let o=s;for(const [a,b] of PRON)o=o.split(a).join(b);return o}
 const api={FILMS,build,frame,W,H,PRON,say};
 if(typeof module!=="undefined")module.exports=api;else window.FILMKIT=api;
