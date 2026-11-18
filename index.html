@@ -282,7 +282,7 @@ dialog .x{background:#fff;color:var(--ink);border:0;border-radius:10px;font:inhe
 const V=[
  {n:1,t:"一句玩笑話",d:"3:35",f:"video/1-joke.mp4",img:"img/cover1.jpg",p:"阿哲笑小宇「很唐」，小晴的弟弟就是唐氏症者。最後老師說明為什麼不要這樣說。",s:"第 2 步"},
  {n:2,t:"認識唐氏症",d:"3:06",f:"video/2-down-syndrome.mp4",img:"img/cover2.jpg",p:"「唐」的由來、第 21 對染色體、不會傳染、早期療育、3/21 世界唐氏症日，以及「唐寶寶」這個詞。",s:"第 3 步"},
- {n:3,t:"講話前先想想",d:"2:14",f:"video/3-think-first.mp4",img:"img/cover3.jpg",p:"不只是唐、紅綠燈、換句話說，以及「一個詞的重量」：說出口的話要自己負責。",s:"第 7 步"}];
+ {n:3,t:"講話前先想想",d:"2:38",f:"video/3-think-first.mp4",img:"img/cover3.jpg",p:"不只是唐、紅綠燈、換句話說，以及「一個詞的重量」：說出口的話要自己負責。",s:"第 7 步"}];
 const dl='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>';
 document.getElementById("vids").innerHTML=V.map(v=>`<article class="card">
  <button class="pic" type="button" data-v="${v.n}" aria-label="播放動畫 ${v.n}：${v.t}"><img src="${v.img}" alt="" loading="lazy"><span class="dur">${v.d}</span></button>
