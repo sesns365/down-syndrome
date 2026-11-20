@@ -766,7 +766,7 @@ function faceSVG(k){const mouth=k==="happy"?'<path d="M-26 14 q26 26 52 0" strok
   const col={happy:"#7fd1a3",ok:"#ffd666",sad:"#ff9b8a"}[k];
   return `<svg viewBox="-70 -70 140 140" aria-hidden="true"><circle r="64" fill="${col}" stroke="#1b2540" stroke-width="5"/><circle cx="-22" cy="-8" r="8" fill="#1b2540"/><circle cx="22" cy="-8" r="8" fill="#1b2540"/>${mouth}</svg>`}
 /* 朗讀：瀏覽器內建台灣語音 */
-function readAloud(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,"").replace(/[「」]/g,""));const v=twVoice(["HsiaoChen","HsiaoYu"]);if(v){u.voice=v;u.lang=v.lang}else u.lang="zh-TW";u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
+function readAloud(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,"").replace(/[「」]/g,"").replace(/[\u{E0100}-\u{E01EF}]/gu,""));const v=twVoice(["HsiaoChen","HsiaoYu"]);if(v){u.voice=v;u.lang=v.lang}else u.lang="zh-TW";u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
 const SPK=t=>`<button type="button" class="spk" data-say="${esc(t.replace(/<[^>]+>/g,""))}" aria-label="念給我聽">🔊 念給我聽</button>`;
 function bindSpk(){document.querySelectorAll("[data-say]").forEach(b=>b.onclick=e=>{e.stopPropagation();readAloud(b.dataset.say)})}
 function faceVotes(key,idx,n=3){const all=store.get(key,{}),v=all[idx]||[0,0,0];
@@ -810,7 +810,7 @@ function renderStory(){
   mountFilm("lodrama");
 }
 /* ---------- 3 認識唐氏症 ---------- */
-const LK=[["👶","一出生就有","在媽媽肚子裡就有，不是誰的錯。"],["🤝","不會傳染","可以一起玩、一起學習。"],["🐢","多練習幾次","學東西需要多一點時間。"],["🏷️","叫他的名字","最好的稱呼，就是他的名字。"]];
+const LK=[["👶","一出生就有","在媽媽󠇡肚子󠇡裡就有，不是誰的錯。"],["🤝","不會傳染","可以一起玩、一起學習。"],["🐢","多練習幾次","學東西󠇡需要多一點時間。"],["🏷️","叫他的名字","最好的稱呼，就是他的名字。"]];
 function renderLearnLo(){
   $("#main").innerHTML=`<section class="panel lo">
    ${head("learn","","認識唐氏症")}
@@ -821,11 +821,11 @@ function renderLearnLo(){
 }
 /* ---------- 4 聽了會不舒服嗎？ ---------- */
 const LS=[
- {s:"「你畫得好漂亮！」",a:0,f:"被稱讚，心裡會開心。"},
- {s:"「你今天穿藍色的衣服。」",a:1,f:"只是說出看到的事，大部分的人會覺得還好。"},
+ {s:"「你畫得󠇡好漂亮！」",a:0,f:"被稱讚，心裡會開心。"},
+ {s:"「你今天穿藍色的衣服。」",a:1,f:"只是說出看到的事，大部分󠇡的人會覺得󠇡還好。"},
  {s:"「你很唐欸！」",a:2,f:"用「唐」笑別人，被笑的人會難過；唐氏症的小朋友跟家人聽到，也會難過。"},
  {s:"「慢慢來，我等你。」",a:0,f:"有人願意等我，心裡暖暖的。"},
- {s:"「唐寶！快一點啦！」",a:2,f:"大聲笑別人慢，會讓人覺得丟臉、難過。"},
+ {s:"「唐寶！快一點啦！」",a:2,f:"大聲笑別人慢，會讓人覺得󠇡丟臉、難過。"},
  {s:"「你好笨喔！這也不會。」",a:2,f:"說別人笨，會讓人不想再試了。"}];
 function renderListen(){
   const st=store.get("lis",{i:0,open:false});
@@ -835,7 +835,7 @@ function renderListen(){
      ${head("listen","","聽了，會不舒服嗎？")}
      <div class="card scen">
        <div class="row" style="justify-content:space-between"><span class="step">第 ${st.i+1} 句／共 ${LS.length} 句</span><button class="linkbtn" id="rs" type="button">重設票數</button></div>
-       <p class="zy lq">如果有人這樣跟你說，你會覺得？</p>
+       <p class="zy lq">如果有人這樣跟你說，你會覺得󠇡？</p>
        <div class="say zy">${c.s}${SPK(c.s)}</div>
        ${faceVotes("lisv",st.i)}
        ${st.open?`<div class="explain zy"><b>${FACES[c.a][1]}：</b>${c.f}${okHurt?`<br><span class="okq">選「還好」的小朋友，想一想：如果是小宇聽到，他會怎麼樣？</span>`:""}</div>`:""}
@@ -853,7 +853,7 @@ function renderListen(){
 }
 /* ---------- 5 說錯話怎麼辦 ---------- */
 const STEP3=[["✋","停下來","發現說錯話，先停下來。"],["🙇","說對不起","看著對方，說：對不起。"],["💬","換句話說","換一句讓人舒服的話。"]];
-const LOFLIPS=[["你很唐欸！","這題有點難，我們一起想。"],["唐寶！快一點啦！","慢慢來，我等你。"],["你好笨喔！","沒關係，再試一次！"],["好像唐寶喔。","（叫他的名字）"]];
+const LOFLIPS=[["你很唐欸！","這題有點難，我們一起想。"],["唐寶！快一點啦！","慢慢來，我等你。"],["你好笨喔！","沒關係󠇡，再試一次！"],["好像唐寶喔。","（叫他的名字）"]];
 function renderSorry(){
   $("#main").innerHTML=`<section class="panel lo">
    ${head("sorry","","說錯話，怎麼辦？")}
