@@ -242,7 +242,49 @@ const sum={id:"sum",title:"講話前先想想",shots:[
   draw:(t,S)=>plain(t)+g(txt(0,0,"講話之前先想想",{size:84,w:900})+txt(0,110,"「會不會讓人不舒服？」",{size:84,w:900}),{x:640,y:260,s:pop(t,.2)})+(S.seg>=1?txt(640,690,"多一點理解，多一點友善",{size:40,fill:C.muted,op:p(t,S.at(1))}):"")}
 ]};
 
-const FILMS={drama,know,sum};
+
+/* ========== 低年級版 ========== */
+const face=(kind,x,y,s,a,t,lab)=>{const col={happy:C.mint,ok:C.sun,sad:C.coral}[kind];
+  const mouth=kind==="happy"?`<path d="M-30 18 q30 30 60 0" stroke="${C.ink}" stroke-width="8" fill="none" stroke-linecap="round"/>`:kind==="ok"?`<path d="M-28 26h56" stroke="${C.ink}" stroke-width="8" stroke-linecap="round"/>`:`<path d="M-30 36 q30 -28 60 0" stroke="${C.ink}" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M-40 -34l22 10M40 -34l-22 10" stroke="${C.ink}" stroke-width="7" stroke-linecap="round"/>`;
+  return g(`<circle r="80" fill="${col}" stroke="${C.ink}" stroke-width="6"/><circle cx="-26" cy="-8" r="9" fill="${C.ink}"/><circle cx="26" cy="-8" r="9" fill="${C.ink}"/>${mouth}${lab?txt(0,140,lab,{size:40,w:900}):""}`,{x,y,s:s*pop(t,a)})};
+const D=drama.shots,KN=know.shots;
+const lodrama={id:"lodrama",title:"一句玩笑話",shots:[
+ {segs:[["n","小故事：一句玩笑話。"]],min:4,draw:(t)=>titleCard(t,"一句玩笑話","小故事")},
+ {segs:[["n","下課了，小宇在黑板上算數學，他算錯了。"],["zhe","哈哈！你很唐欸！","hurt"],["n","有的同學笑了。"]],pos:D[1].pos,draw:D[1].draw},
+ {segs:[["n","旁邊的同學也跟著喊。"],["m1","唐寶！唐寶！","hurt"],["n","小宇低下頭，不說話。"]],pos:D[2].pos,draw:D[2].draw},
+ {segs:[["n","可是，有一個人沒有笑。"],["n","那就是小晴。"],["n","她看著小宇，心裡很不舒服。"]],draw:D[3].draw},
+ {segs:[["n","回到家，弟弟小安跑了過來。"],["an","姐姐！我自己綁好鞋帶了！"],["n","小安是唐氏症寶寶。綁鞋帶，他練習了好久好久。"]],pos:D[4].pos,draw:D[4].draw},
+ {segs:[["qing","小安好棒！"],["n","可是，小晴一直想著教室裡的笑聲。"],["qing","原來大家說的唐寶，是在笑像弟弟這樣的人……"]],pos:D[5].pos,draw:D[5].draw},
+ {segs:[["n","第二天，小晴去找阿哲。"],["n","阿哲有點緊張。"],["qing","阿哲，我弟弟是唐氏症。聽到你們那樣說，我很難過。"]],pos:D[6].pos,draw:D[6].draw},
+ {segs:[["n","阿哲愣住了。"],["zhe","我只是覺得好玩……對不起。"],["qing","謝謝你聽我說。"]],pos:D[7].pos,draw:D[7].draw},
+ {segs:[["n","阿哲走到小宇旁邊。"],["zhe","小宇，對不起。我們一起想這一題！","kind"],["yu","好啊！","kind"],["n","小宇笑了。"]],pos:D[8].pos,draw:D[8].draw},
+ {segs:[["n","一句玩笑話，可能讓人很難過。"],["n","講話前，先想一想："],["n","他聽了，會不舒服嗎？"]],
+  draw:(t,S)=>plain(t)+(S.seg===0?g(txt(0,0,"一句玩笑話",{size:84,w:900})+txt(0,100,"可能讓人很難過",{size:56,w:900,fill:C.bad}),{x:640,y:260,s:pop(t,.2)})+face("sad",640,520,1,.9,t):"")+
+   (S.seg>=1?g(txt(0,0,"講話前，先想一想",{size:72,w:900}),{x:640,y:150,s:pop(t,S.at(1))}):"")+
+   (S.seg>=2?g(txt(0,0,"他聽了，會不舒服嗎？",{size:54,w:900,fill:C.blue}),{x:640,y:250,s:pop(t,S.at(2))})+face("happy",380,440,.9,S.at(2)+.3,t,"開心")+face("ok",640,440,.9,S.at(2)+.5,t,"還好")+face("sad",900,440,.9,S.at(2)+.7,t,"不舒服"):"")}
+]};
+const loknow={id:"loknow",title:"認識唐氏症",shots:[
+ {segs:[["n","我們一起來認識唐氏症。"],["n","「唐」，是一位英國醫生的名字。"],["n","跟「笨」沒有關係。"]],
+  draw:(t,S)=>plain(t)+(S.seg===0?g(txt(0,0,"認識唐氏症",{size:110,w:900}),{x:640,y:360,s:pop(t,.2)}):"")+
+   (S.seg>=1?g(`<rect x="-330" y="-110" width="660" height="230" rx="30" fill="${C.paper}" stroke="${C.blue}" stroke-width="6"/>`+txt(0,-30,"約翰・朗頓・唐",{size:64,w:900})+txt(0,40,"John Langdon Down",{size:40,fill:C.muted})+txt(0,90,"英國醫生",{size:34,fill:C.blue}),{x:640,y:300,s:pop(t,S.at(1))}):"")+
+   (S.seg>=2?g(`<rect x="-340" y="-46" width="680" height="88" rx="44" fill="${C.paper}" stroke="${C.good}" stroke-width="5"/>`+txt(0,14,"跟「笨」沒有關係",{size:48,w:900,fill:C.good}),{x:640,y:520,s:pop(t,S.at(2))}):"")},
+ {segs:[["n","唐氏症，是寶寶在媽媽肚子裡就有的。"],["n","不是誰的錯，也不會傳染。"]],draw:KN[2].draw},
+ {segs:[["n","每個人，都長得不一樣。"],["n","唐氏症的人也是。"]],
+  draw:(t,S)=>plain(t)+["zhe","qing","an","yu","m2"].map((k,i)=>person(k,240+i*200,520,{t,mood:"happy",label:false,s:1.3,op:p(t,.3+i*.25)})).join("")+
+   g(txt(0,0,"每個人，都長得不一樣",{size:62,w:900}),{x:640,y:150,s:pop(t,.4)})+(S.seg>=1?g(`<rect x="-260" y="-44" width="520" height="84" rx="42" fill="${C.sun}"/>`+txt(0,12,"唐氏症的人也是",{size:44,w:900}),{x:640,y:250,s:pop(t,S.at(1))}):"")},
+ {segs:[["n","他們學東西，需要多一點時間，多練習幾次。"],["n","有人幫忙，就能慢慢學會。"]],
+  draw:(t,S)=>plain(t)+[["多一點時間",C.sky,0,.3],["多練習幾次",C.mint,0,1.6]].map(([s,c,i,a],k)=>g(`<circle r="130" fill="${c}"/>`+txt(0,15,s,{size:40,w:900}),{x:380+k*520,y:300,s:pop(t,a)})).join("")+
+   (S.seg>=1?g(`<rect x="-330" y="-50" width="660" height="96" rx="48" fill="${C.sun}"/>`+txt(0,14,"有人幫忙，慢慢學會",{size:48,w:900}),{x:640,y:560,s:pop(t,S.at(1))}):"")},
+ {segs:[["n","他們也會上學、上班、自己搭車。"],["n","也有喜歡的事，會開心，也會難過，跟我們一樣。"]],
+  draw:(t,S)=>plain(t)+[["grad","上學"],["work","上班"],["bus","自己搭車"]].map(([k,l],i)=>icon(k,l,280+i*360,280,1.1,t,.4+i*.8)).join("")+
+   (S.seg>=1?`<rect width="${W}" height="${H}" fill="${C.bg}" opacity="${.9*p(t,S.at(1),.6)}"/>`+g(txt(0,0,"跟我們一樣",{size:100,w:900})+txt(0,90,"有喜歡的事，會開心，也會難過",{size:44,w:500,fill:C.muted}),{x:640,y:340,s:pop(t,S.at(1)+.3)}):"")},
+ {segs:[["n","三月二十一日，是世界唐氏症日。"],["n","很多人會穿不一樣的襪子，告訴大家：不一樣，也很好！"]],draw:KN[7].draw},
+ {segs:[["n","叫人的時候，"],["n","最好的方法，就是叫他的名字。"]],
+  draw:(t,S)=>plain(t)+person("qing",420,460,{t,mood:"happy",talk:S.seg>=1&&t<S.at(1)+2})+person("an",820,490,{t,mood:"laugh",bob:S.seg>=1})+
+   (S.seg>=1?g(`<rect x="-150" y="-60" width="300" height="110" rx="40" fill="${C.paper}" stroke="${C.ink}" stroke-width="5"/>`+txt(0,16,"小安！",{size:56,w:900}),{x:600,y:230,s:pop(t,S.at(1)+.2)})+
+     g(`<rect x="-360" y="-46" width="720" height="88" rx="44" fill="${C.sun}"/>`+txt(0,14,"最好的方法：叫他的名字",{size:46,w:900}),{x:640,y:80,s:pop(t,S.at(1)+.8)}):"")}
+]};
+const FILMS={drama,know,sum,lodrama,loknow};
 const LEAD=.9,GAP=.7,TAIL=1.8;
 /* 依旁白長度排時間軸 */
 function build(film,timing){
