@@ -625,6 +625,7 @@ a:not(.btn){text-underline-offset:3px}
 .s3 .no{position:absolute;left:12px;top:10px;width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:900}
 .s3 .em{font-size:2.6rem}.s3 b{font-size:1.8rem}.s3 span.zy{font-size:1.15rem}
 .lo .flip .w{font-size:1.5rem;line-height:1.6}
+.lo .flip.on{background:#d9f4e6;color:#123;outline:3px solid var(--mint)}
 .lo .zy,.lo .scen .say.zy,.lo .qbig.zy{font-family:"Bpmf Iansui","Iansui","Noto Sans TC",sans-serif;font-weight:400}
 .lo .qslide{min-height:0;gap:8px;padding-block:18px 16px}
 .lo .qbig.zy{font-size:clamp(1.6rem,3.5vw,2.5rem);line-height:1.4}
@@ -767,8 +768,10 @@ function faceSVG(k){const mouth=k==="happy"?'<path d="M-26 14 q26 26 52 0" strok
   return `<svg viewBox="-70 -70 140 140" aria-hidden="true"><circle r="64" fill="${col}" stroke="#1b2540" stroke-width="5"/><circle cx="-22" cy="-8" r="8" fill="#1b2540"/><circle cx="22" cy="-8" r="8" fill="#1b2540"/>${mouth}</svg>`}
 /* 朗讀：瀏覽器內建台灣語音 */
 function readAloud(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,"").replace(/[「」]/g,"").replace(/[\u{E0100}-\u{E01EF}]/gu,""));const v=twVoice(["HsiaoChen","HsiaoYu"]);if(v){u.voice=v;u.lang=v.lang}else u.lang="zh-TW";u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
-const SPK=t=>`<button type="button" class="spk" data-say="${esc(t.replace(/<[^>]+>/g,""))}" aria-label="念給我聽">🔊 念給我聽</button>`;
-function bindSpk(){document.querySelectorAll("[data-say]").forEach(b=>b.onclick=e=>{e.stopPropagation();readAloud(b.dataset.say)})}
+const SPK=(t,clip)=>`<button type="button" class="spk" data-say="${esc(t.replace(/<[^>]+>/g,""))}"${clip?` data-clip="${clip}"`:""} aria-label="念給我聽">🔊 念給我聽</button>`;
+let spkAu=null;
+function playClip(src,fallback){try{speechSynthesis.cancel()}catch(e){}if(spkAu){spkAu.pause();spkAu=null}const a=new Audio(src);spkAu=a;let done=false;const fb=()=>{if(!done){done=true;fallback()}};a.onerror=fb;a.play().then(()=>{done=true}).catch(fb)}
+function bindSpk(){document.querySelectorAll("[data-say]").forEach(b=>b.onclick=e=>{e.stopPropagation();const t=b.dataset.say;if(b.dataset.clip)playClip(b.dataset.clip,()=>readAloud(t));else readAloud(t)})}
 function faceVotes(key,idx,n=3){const all=store.get(key,{}),v=all[idx]||[0,0,0];
   return `<div class="fvotes">${FACES.map(([k,t],j)=>`<button type="button" class="fvote ${k}" data-fv="${j}" aria-label="${t}，目前 ${v[j]} 票，點一下加一票">${faceSVG(k)}<span class="t">${t}</span><output>${v[j]}</output></button>`).join("")}</div>`}
 function bindFace(key,idx,redraw){document.querySelectorAll("[data-fv]").forEach(b=>b.onclick=()=>{const all=store.get(key,{});const v=all[idx]||[0,0,0];v[+b.dataset.fv]++;all[idx]=v;store.set(key,all);FX.tone([[600-+b.dataset.fv*90,.12]]);redraw();const el=document.querySelector(`[data-fv="${b.dataset.fv}"]`);if(el){el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump")}})}
@@ -800,17 +803,17 @@ function renderFeel(){
 /* ---------- 2 小故事 ---------- */
 function renderStory(){
   $("#main").innerHTML=`<section class="panel lo">
-   ${head("story","","小故事：一句玩笑話")}
+   ${head("story","","小故事：一󠇡句玩笑話")}
    <div class="duo">${filmBlock("lodrama")}
    <div class="duoside">
      <div class="card"><h3>看完說說看</h3><ol class="zy loq"><li>小宇被笑的時候，<br>心情是什麼？</li><li>小晴為什麼不開心？</li><li>阿哲後來做了什麼？</li></ol></div>
-     <div class="card zyc"><p class="zy" style="margin:0">一句玩笑話，<br><b>可能讓人很難過。</b></p></div>
+     <div class="card zyc"><p class="zy" style="margin:0">一󠇡句玩笑話，<br><b>可能讓人很難過。</b></p></div>
    </div></div>
    ${foot("story")}</section>`;
   mountFilm("lodrama");
 }
 /* ---------- 3 認識唐氏症 ---------- */
-const LK=[["👶","一出生就有","在媽媽󠇡肚子󠇡裡就有，不是誰的錯。"],["🤝","不會傳染","可以一起玩、一起學習。"],["🐢","多練習幾次","學東西󠇡需要多一點時間。"],["🏷️","叫他的名字","最好的稱呼，就是他的名字。"]];
+const LK=[["👶","一󠇢出生就有","在媽媽󠇡肚子󠇡裡就有，不󠇡是誰的錯。"],["🤝","不󠇡會傳染","可以一󠇢起玩、一󠇢起學習。"],["🐢","多練習幾次","學東西󠇡需要多一󠇢點時間。"],["🏷️","叫他的名字","最好的稱呼，就是他的名字。"]];
 function renderLearnLo(){
   $("#main").innerHTML=`<section class="panel lo">
    ${head("learn","","認識唐氏症")}
@@ -825,8 +828,8 @@ const LS=[
  {s:"「你今天穿藍色的衣服。」",a:1,f:"只是說出看到的事，大部分󠇡的人會覺得󠇡還好。"},
  {s:"「你很唐欸！」",a:2,f:"用「唐」笑別人，被笑的人會難過；唐氏症的小朋友跟家人聽到，也會難過。"},
  {s:"「慢慢來，我等你。」",a:0,f:"有人願意等我，心裡暖暖的。"},
- {s:"「唐寶！快一點啦！」",a:2,f:"大聲笑別人慢，會讓人覺得󠇡丟臉、難過。"},
- {s:"「你好笨喔！這也不會。」",a:2,f:"說別人笨，會讓人不想再試了。"}];
+ {s:"「唐寶！快一󠇢點啦！」",a:2,f:"大聲笑別人慢，會讓人覺得󠇡丟臉、難過。"},
+ {s:"「你好笨喔！這也不󠇡會。」",a:2,f:"說別人笨，會讓人不想再試了。"}];
 function renderListen(){
   const st=store.get("lis",{i:0,open:false});
   const draw=()=>{const c=LS[st.i],v=(store.get("lisv",{})[st.i])||[0,0,0];
@@ -836,7 +839,7 @@ function renderListen(){
      <div class="card scen">
        <div class="row" style="justify-content:space-between"><span class="step">第 ${st.i+1} 句／共 ${LS.length} 句</span><button class="linkbtn" id="rs" type="button">重設票數</button></div>
        <p class="zy lq">如果有人這樣跟你說，你會覺得󠇡？</p>
-       <div class="say zy">${c.s}${SPK(c.s)}</div>
+       <div class="say zy">${c.s}${SPK(c.s,`say_ls_${st.i}.mp3`)}</div>
        ${faceVotes("lisv",st.i)}
        ${st.open?`<div class="explain zy"><b>${FACES[c.a][1]}：</b>${c.f}${okHurt?`<br><span class="okq">選「還好」的小朋友，想一想：如果是小宇聽到，他會怎麼樣？</span>`:""}</div>`:""}
        <div class="sortnav"><button class="btn ghost" id="pv" type="button" ${st.i===0?"disabled":""}>上一句</button>
@@ -852,13 +855,13 @@ function renderListen(){
   draw();
 }
 /* ---------- 5 說錯話怎麼辦 ---------- */
-const STEP3=[["✋","停下來","發現說錯話，先停下來。"],["🙇","說對不起","看著對方，說：對不起。"],["💬","換句話說","換一句讓人舒服的話。"]];
-const LOFLIPS=[["你很唐欸！","這題有點難，我們一起想。"],["唐寶！快一點啦！","慢慢來，我等你。"],["你好笨喔！","沒關係󠇡，再試一次！"],["好像唐寶喔。","（叫他的名字）"]];
+const STEP3=[["✋","停下來","發現說錯話，先停下來。"],["🙇","說對不起","看著對方，說：對不起。"],["💬","換句話說","換一󠇡句讓人舒服的話。"]];
+const LOFLIPS=[["你很唐欸！","這題有點難，我們一󠇢起想。"],["唐寶！快一󠇢點啦！","慢慢來，我等你。"],["你好笨喔！","沒關係󠇡，再試一󠇡次！"],["好像唐寶喔。","（叫他的名字）"]];
 function renderSorry(){
   $("#main").innerHTML=`<section class="panel lo">
    ${head("sorry","","說錯話，怎麼辦？")}
    <div class="steps3">${STEP3.map(([e,t,d],k)=>`<div class="s3"><span class="no">${k+1}</span><span class="em" aria-hidden="true">${e}</span><b class="zy">${t}</b><span class="zy">${d}</span></div>`).join("")}</div>
-   <div class="card"><h3 class="zy" style="margin-bottom:10px">換句話說：點一下，換成好話，大家一起念</h3>
+   <div class="card"><h3 class="zy" style="margin-bottom:10px">換句話說：點一󠇡下，換成好話，大家一󠇢起念</h3>
      <div class="flips">${LOFLIPS.map((f,k)=>`<button class="flip" type="button" data-k="${k}" aria-pressed="false"><span class="lab zy">原本</span><span class="w zy">${f[0]}</span></button>`).join("")}</div></div>
    ${foot("sorry")}</section>`;
   document.querySelectorAll(".flip").forEach(b=>b.onclick=()=>{const k=+b.dataset.k,on=b.getAttribute("aria-pressed")!=="true";
@@ -876,7 +879,7 @@ function CERTLO(cls){
   const box=(v,i)=>{const x=95+i*320,y=280;return `<g><rect x="${x}" y="${y}" width="292" height="190" rx="28" fill="${v[3]}" stroke="${v[2]}" stroke-width="4"/>${star(x+146,y+48,26,v[2])}
     <text x="${x+146}" y="${y+118}" text-anchor="middle" font-size="36" fill="${N}" font-family="${K}">${v[0]}</text>
     <text x="${x+146}" y="${y+164}" text-anchor="middle" font-size="26" fill="${N}" font-family="${K}">${v[1]}</text></g>`};
-  let hands="";for(let r=0;r<2;r++)for(let c=0;c<13;c++){const x=96+c*72,y=560+r*84;hands+=`<rect x="${x}" y="${y}" width="62" height="74" rx="14" fill="#fff" stroke="${N}" stroke-opacity=".35" stroke-width="1.5" stroke-dasharray="5 4"/>`}
+  let hands="";for(let r=0;r<4;r++)for(let c=0;c<7;c++){const x=96+c*133,y=598+r*44;hands+=`<line x1="${x}" y1="${y}" x2="${x+118}" y2="${y}" stroke="${N}" stroke-opacity=".45" stroke-width="1.5"/>`}
   return `<svg class="cert" viewBox="0 0 1123 794" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${name} 好好說小天使宣言">
    <defs><linearGradient id="clg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eaf6ff"/><stop offset="1" stop-color="#fff4e2"/></linearGradient></defs>
    <rect width="1123" height="794" fill="url(#clg)"/>
@@ -884,9 +887,9 @@ function CERTLO(cls){
    <rect x="34" y="34" width="1055" height="726" rx="24" fill="none" stroke="#ffc94d" stroke-width="3" stroke-dasharray="14 10"/>
    ${star(150,90,16,"#ffc94d")}${star(980,90,16,"#6aa8ff")}${star(250,230,10,"#ff8a7a")}${star(880,230,10,"#5cc9a7")}
    <text x="561.5" y="150" text-anchor="middle" font-size="68" fill="${N}" font-family="${K}">好好說小天使</text>
-   <text x="561.5" y="225" text-anchor="middle" font-size="30" fill="${N}" font-family="${K}"><tspan fill="#e8604c">${name}</tspan>　我們一起約定：</text>
+   <text x="561.5" y="225" text-anchor="middle" font-size="30" fill="${N}" font-family="${K}"><tspan fill="#e8604c">${name}</tspan>　我們一󠇢起約定：</text>
    ${V.map(box).join("")}
-   <text x="96" y="545" font-size="20" fill="${N}" font-weight="700" font-family="${B}">全班按手印或簽名</text>
+   <text x="96" y="545" font-size="20" fill="${N}" font-weight="700" font-family="${B}">全班簽名</text>
    <text x="1027" y="545" text-anchor="end" font-size="18" fill="${N}" font-family="${B}">${date}</text>
    ${hands}
    <g class="seal" transform="translate(1000 160)"><g class="sealin"><circle r="58" fill="#ffc94d" stroke="#e0a52a" stroke-width="3"/><circle r="46" fill="#fff6dc" stroke="#e0a52a" stroke-width="2"/>
